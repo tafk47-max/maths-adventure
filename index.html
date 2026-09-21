@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Maths">
+<meta name="apple-mobile-web-app-title" content="Maths 2">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -358,6 +358,8 @@ table.ctable td{font-size:15px}
 .chalmini{margin-top:26px;text-align:center;font-size:15px}.chalmini .linkbtn{font-size:16px;color:var(--c)}
 .chalbanner{display:inline-block;background:var(--sun);color:#1F2A5A;font-weight:900;border-radius:12px;padding:6px 12px;margin:0 0 12px}
 .selfcheck{margin-top:14px;padding:12px;border:2px dashed var(--line);border-radius:18px}.selfcheck .chips{justify-content:center}.selfcheck .chip{font-size:18px}
+.stagebadge{display:inline-block;vertical-align:middle;font-size:.5em;line-height:1.2;background:var(--num);color:#fff;border:3px solid var(--ink);border-radius:14px;padding:2px 12px 4px;transform:rotate(-3deg);box-shadow:3px 3px 0 var(--ink);white-space:nowrap;margin-left:4px}
+.stagebadge.sm{font-size:14px;border-width:2px;box-shadow:2px 2px 0 var(--ink);padding:1px 8px}
 .lab{display:flex;flex-direction:column;align-items:center;gap:6px}
 #deco{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden}
 .wrap{position:relative;z-index:1;padding-bottom:110px}
@@ -1198,7 +1200,7 @@ const _u=s=>{try{return Array.from(atob(s)).map((c,i)=>String.fromCharCode(c.cha
 const APPVER='1.0',APPDATE='21 September 2026',OWNER=_u('U2lvYm5iZQ=='),LINKEDIN=_u('b3x9eng9JyZ9fHAmZWNlbG1tY2Upa2ZnJG5mJn5qYWBsb2ZyZGVrYyg=');
 const LIlink=()=>`<a href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn profile</a>`;
 function aboutHTML(){return `<h2>ℹ️ About this app</h2>
- <h3>About</h3><p>Maths Adventure, version ${APPVER}. Produced ${APPDATE}. Created by ${OWNER}. Connect or get in touch: ${LIlink()}</p>
+ <h3>About</h3><p>Maths Adventure Stage 2, version ${APPVER}. Produced ${APPDATE}. Created by ${OWNER}. Connect or get in touch: ${LIlink()}</p>
  <h3>Copyright</h3><p>© 2026 ${OWNER}. All rights reserved. The Maths Adventure app, including its design, text, questions, lessons, characters (Hoot, Scribble, Zib, Bolt, Berry, Twinkle, Pip and the buddy designs) and artwork, may not be copied, sold or redistributed without permission. Families and teachers may use it freely for their own children's learning.</p>
  <h3>What it covers</h3><p>Maths Adventure is inspired by, and covers the topics in, the Cambridge Primary Mathematics curriculum for Stage 2 (ages about 6 to 8). It is an independent app. It <b>IS NOT</b> affiliated with, endorsed by or connected to Cambridge University Press &amp; Assessment. "Cambridge" is a trademark of its owner, used here only to describe the topics covered. The grown-ups area has a full curriculum match.</p>
  <h3>Educational use</h3><p>This app is a practice tool to support learning at home. It does not replace a teacher, a school or official learning materials, and results in the app do not predict school or exam results. We take care to keep the questions accurate, but mistakes can happen.</p>
@@ -1215,13 +1217,13 @@ function tick(){const el=document.getElementById('qclock');if(!el){clearInterval
 
 /* ================= first run, profiles, look ================= */
 function renderWelcome(){hush();S.view='welcome';applyTheme('classic');const has=DB.profiles.length>0;
- app.innerHTML=`${has?'<div class="topbar"><button class="back" data-act="who">Back</button></div>':''}<div class="welcome"><div><div class="hwrap">${hootSVG('cheer','classic')}</div><h1>Hi! I'm Hoot.</h1><p class="bubble" id="wmsg">What's your name?</p><div><input id="namein" type="text" maxlength="20" autocomplete="off" autocapitalize="words" spellcheck="false" aria-label="Your name" placeholder="Type your name"></div><button class="primary" data-act="setname">Next</button></div></div>`;
+ app.innerHTML=`${has?'<div class="topbar"><button class="back" data-act="who">Back</button></div>':''}<div class="welcome"><div><div class="hwrap">${hootSVG('cheer','classic')}</div><p class="small">Maths Adventure <span class="stagebadge sm">Stage 2</span></p><h1>Hi! I'm Hoot.</h1><p class="bubble" id="wmsg">What's your name?</p><div><input id="namein" type="text" maxlength="20" autocomplete="off" autocapitalize="words" spellcheck="false" aria-label="Your name" placeholder="Type your name"></div><button class="primary" data-act="setname">Next</button></div></div>`;
  const i=document.getElementById('namein');i.addEventListener('keydown',e=>{if(e.key==='Enter')setName()});try{if(matchMedia('(pointer:fine)').matches)i.focus()}catch(e){}window.scrollTo(0,0)}
 function cleanName(v,max){v=(v||'').replace(/\s+/g,' ').trim().slice(0,max||20);return v?v.charAt(0).toUpperCase()+v.slice(1):''}
 function setName(){const v=cleanName(document.getElementById('namein').value);if(!v){document.getElementById('wmsg').textContent='Type your name in the box, then tap Next.';return}
  S.draft={id:null,name:v,theme:'classic',buddy:defaultBuddy()};S.lookFrom='new';sfx('tap');renderLook()}
 function renderWho(){hush();S.view='who';applyTheme('classic');if(!DB.profiles.length){renderWelcome();return}
- app.innerHTML=`<div class="homebar"><button class="back" data-act="about">ℹ️ About</button>${soundIcon()}<button class="back" data-act="parents">👪 Grown-ups</button></div><div class="who"><div class="hwrap" style="width:130px;margin:0 auto">${hootSVG('happy','classic')}</div><h1>Who's learning today?</h1><div class="ptiles">${DB.profiles.map(p=>{const T=THEMES[p.theme]||THEMES.classic;return `<button class="ptile" data-act="pickp" data-id="${p.id}"><span class="av" style="background:${T.cert.bg}">${buddySVG(p.buddy)}</span><span class="pn">${esc(p.name)}</span><span class="muted">${T.emoji} ${totalStars(p)} ★</span></button>`}).join('')}<button class="ptile add" data-act="addp"><span class="av" aria-hidden="true">＋</span><span class="pn">Add learner</span></button></div></div>${footerHTML()}`;window.scrollTo(0,0)}
+ app.innerHTML=`<div class="homebar"><button class="back" data-act="about">ℹ️ About</button>${soundIcon()}<button class="back" data-act="parents">👪 Grown-ups</button></div><div class="who"><div class="hwrap" style="width:130px;margin:0 auto">${hootSVG('happy','classic')}</div><p class="small">Maths Adventure <span class="stagebadge sm">Stage 2</span></p><h1>Who's learning today?</h1><div class="ptiles">${DB.profiles.map(p=>{const T=THEMES[p.theme]||THEMES.classic;return `<button class="ptile" data-act="pickp" data-id="${p.id}"><span class="av" style="background:${T.cert.bg}">${buddySVG(p.buddy)}</span><span class="pn">${esc(p.name)}</span><span class="muted">${T.emoji} ${totalStars(p)} ★</span></button>`}).join('')}<button class="ptile add" data-act="addp"><span class="av" aria-hidden="true">＋</span><span class="pn">Add learner</span></button></div></div>${footerHTML()}`;window.scrollTo(0,0)}
 function renderLook(keepScroll){S.view='look';const d=S.draft,y=window.scrollY;applyTheme(d.theme);
  app.innerHTML=`<div class="topbar"><button class="back" data-act="lookcancel">${d.id?'Cancel':'Back'}</button></div>
  <h1>${d.id?`Change the look for ${esc(d.name)}`:`Make it yours, ${esc(d.name)}!`}</h1>
@@ -1240,7 +1242,7 @@ function lookSave(){const d=S.draft;d.buddy.name=cleanName(document.getElementBy
 /* ================= home and lesson ================= */
 function renderHome(){hush();S.view='home';const p=prof();if(!p){renderWho();return}applyTheme();const th=curTheme(),T=THEMES[th];
  let h=`<div class="homebar"><button class="back" data-act="who"><span class="miniav">${buddySVG(p.buddy)}</span> Switch learner</button><span style="flex:1"></span><button class="back" data-act="mylook">🎨 My look</button>${soundIcon()}<button class="back" data-act="parents">👪 Grown-ups</button><button class="back" data-act="about">ℹ️ About</button></div>
- <header class="hero"><div class="hwrap owlbox">${hootSVG('happy')}</div><div><h1>Maths Adventure</h1><p class="subline">Fun maths practice for ages 6 to 8, following the international Stage 2 topics</p><p class="bubble">Hi ${nm()}! I'm Hoot. Pick a topic. Read the lesson first, then try the practice questions.</p>
+ <header class="hero"><div class="hwrap owlbox">${hootSVG('happy')}</div><div><h1>Maths Adventure <span class="stagebadge">Stage 2</span></h1><p class="subline">Fun maths practice for ages 6 to 8, following the international Stage 2 topics</p><p class="bubble">Hi ${nm()}! I'm Hoot. Pick a topic. Read the lesson first, then try the practice questions.</p>
  <div class="pals"><div class="pal">${buddySVG(p.buddy)}${esc(p.buddy.name)}</div><div class="pal">${themeBuddySVG(th)}${T.buddy}</div></div></div></header>`;
  {const st=bestStars(p,'warm');h+=`<section class="strand" style="--c:var(--geo);--cs:var(--geo-soft)"><h2><span aria-hidden="true">🌱</span>Start here</h2><div class="cards"><button class="tcard" data-act="topic" data-id="warm"><span class="temoji" aria-hidden="true">🌱</span><span class="tnum">Stage 1 basics</span><span class="ttl">Warm-up Check</span><span class="ttag">A quick check before Stage 2</span><span class="stars" aria-label="${st} of 3 stars">${starStr(st)}</span></button></div></section>`}
  STRANDS.forEach((s,si)=>{h+=`<section class="strand" style="--c:var(--${s.c});--cs:var(--${s.c}-soft)"><h2><span aria-hidden="true">${s.emoji}</span>${s.name}</h2><div class="cards">`;
@@ -1333,7 +1335,7 @@ async function drawResult(L,withArt){const W=1080,H=1350,cv=document.createEleme
  x.fillStyle=TC.bg;x.fillRect(0,0,W,H);x.strokeStyle=TC.line;x.lineWidth=2;
  for(let i=0;i<=W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,H);x.stroke()}for(let j=0;j<=H;j+=40){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke()}
  x.textAlign='center';x.textBaseline='alphabetic';
- x.fillStyle=TC.head;x.font=`800 84px ${F}`;x.fillText('Maths Adventure',W/2,136);
+ x.fillStyle=TC.head;fitFont(x,`800 N ${F}`,84,960,'Maths Adventure: Stage 2');x.fillText('Maths Adventure: Stage 2',W/2,136);
  x.fillStyle=TC.sub;x.font=`700 34px ${B}`;x.fillText('Fun maths practice for ages 6 to 8',W/2,190);
  rrect(x,94,262,920,1000,44);x.fillStyle=col;x.fill();
  rrect(x,80,248,920,1000,44);x.fillStyle='#FFFFFF';x.fill();x.lineWidth=6;x.strokeStyle=ink;x.stroke();
@@ -1379,7 +1381,7 @@ function renderParents(){if(!S.gate){gate(renderParents);return}hush();S.view='p
  else if(!p)body=`<section class="psec"><h2>No learners yet</h2><p>Add a learner from the first page to start.</p></section>${S.ptab==='data'?dataHTML(null):''}`;
  else if(S.ptab==='curric')body=curricHTML(p);else if(S.ptab==='analytics')body=analyticsHTML(p);else if(S.ptab==='records')body=recordsHTML(p);else if(S.ptab==='topics')body=topicsHTML(p);else if(S.ptab==='guide')body=guideHTML(p);else body=dataHTML(p);
  app.innerHTML=`<div style="--c:var(--geo);--cs:var(--geo-soft)"><div class="topbar"><button class="back" data-act="${prof()?'home':'who'}">Back</button></div>
- <div class="phead"><div class="hwrap">${hootSVG('normal','classic')}</div><div><h1>For parents and teachers</h1><p class="muted">Choose a learner, then choose what you'd like to see.</p></div></div>
+ <div class="phead"><div class="hwrap">${hootSVG('normal','classic')}</div><div><p class="small">Maths Adventure, Stage 2</p><h1>For parents and teachers</h1><p class="muted">Choose a learner, then choose what you'd like to see.</p></div></div>
  ${ps.length?`<div class="lpick">${ps.map(x=>`<button class="chip${p&&x.id===p.id?' sel':''}" data-act="pp" data-id="${x.id}"><span class="miniav">${buddySVG(x.buddy)}</span>${esc(x.name)}</button>`).join('')}</div>`:''}
  <div class="tabs" role="tablist">${tabs.map(t=>`<button class="tab${S.ptab===t[0]?' sel':''}" role="tab" aria-selected="${S.ptab===t[0]}" data-act="ptab" data-t="${t[0]}">${t[1]}</button>`).join('')}</div>
  ${S.full?'<div class="notice">This device is running out of space for records. Make a backup and an Excel export, then remove old learners you no longer need.</div>':''}
@@ -1579,11 +1581,11 @@ async function exportXLSX(){const m=document.getElementById('xmsg');const who=(d
  const orows=[['Learner','Objective','What it means','Topic','Answers','Right first try','Right first try %']];ps.forEach(p=>{const qs=recs.filter(r=>r.p===p.id&&r.m!=='chal').flatMap(r=>r.q);OBJ.forEach(o=>{const oq=qs.filter(q=>q.o===o[0]);orows.push([p.name,o[0],o[1],TBY[o[2]].title,oq.length,oq.filter(q=>q.r===1).length,oq.length?pct(oq.filter(q=>q.r===1).length,oq.length):''])})});
  const blob=buildXLSX([{name:'Summary',rows:sum,widths:[16,26,30,8,11,15,17,18,17,11,11,26]},{name:'Tests',rows:tests,widths:[16,12,11,10,9,26,30,12,12,7,8,15,17,18,11]},{name:'Questions',rows:qrows,widths:[16,12,8,26,30,12,10,10,48,30,16,13,14,18,10,9]},{name:'Objectives',rows:orows,widths:[16,10,60,30,10,15,17]},{name:'Learners',rows:lrn,widths:[16,18,28,16,20]}]);
  const nmx=who==='one'?(ps[0].name.replace(/[^\p{L}\p{N}]+/gu,'')||'Learner'):'AllLearners';
- m.textContent=await saveFile(`MathsAdventure_Records_${nmx}_${from}_to_${to}.xlsx`,blob)}
+ m.textContent=await saveFile(`MathsAdventure_Stage2_Records_${nmx}_${from}_to_${to}.xlsx`,blob)}
 
 /* ---- backup and restore ---- */
 async function doBackup(){const d=new Date(),m=document.getElementById('bmsg');const data={app:'maths-adventure',v:3,at:Date.now(),profiles:DB.profiles,records:DB.records};
- const name=`MathsAdventure_Backup_${d.getDate()}${MONTHS3[d.getMonth()]}${String(d.getFullYear()).slice(2)}_${pad2(d.getHours())}${pad2(d.getMinutes())}.json`;
+ const name=`MathsAdventure_Stage2_Backup_${d.getDate()}${MONTHS3[d.getMonth()]}${String(d.getFullYear()).slice(2)}_${pad2(d.getHours())}${pad2(d.getMinutes())}.json`;
  const msg=await saveFile(name,new Blob([JSON.stringify(data)],{type:'application/json'}));if(/^Saved/.test(msg)){DB.settings.lastBackup=Date.now();save()}if(m)m.textContent=msg}
 function readRestore(file){const r=new FileReader();r.onload=()=>{let o=null;try{o=JSON.parse(r.result)}catch(e){}
  if(!o||o.app!=='maths-adventure'||!Array.isArray(o.profiles)||!Array.isArray(o.records)){openSheet('<h2>That file is not a Maths Adventure backup</h2><p>Choose a file whose name starts with MathsAdventure_Backup.</p><div class="sheetbtns"><button class="primary" data-act="closesheet">Close</button></div>','--c:var(--geo);--cs:var(--geo-soft)');return}
