@@ -1584,11 +1584,12 @@ async function exportXLSX(){const m=document.getElementById('xmsg');const who=(d
  m.textContent=await saveFile(`MathsAdventure_Stage2_Records_${nmx}_${from}_to_${to}.xlsx`,blob)}
 
 /* ---- backup and restore ---- */
-async function doBackup(){const d=new Date(),m=document.getElementById('bmsg');const data={app:'maths-adventure',v:3,at:Date.now(),profiles:DB.profiles,records:DB.records};
+async function doBackup(){const d=new Date(),m=document.getElementById('bmsg');const data={app:'maths-adventure',stage:2,v:3,at:Date.now(),profiles:DB.profiles,records:DB.records};
  const name=`MathsAdventure_Stage2_Backup_${d.getDate()}${MONTHS3[d.getMonth()]}${String(d.getFullYear()).slice(2)}_${pad2(d.getHours())}${pad2(d.getMinutes())}.json`;
  const msg=await saveFile(name,new Blob([JSON.stringify(data)],{type:'application/json'}));if(/^Saved/.test(msg)){DB.settings.lastBackup=Date.now();save()}if(m)m.textContent=msg}
 function readRestore(file){const r=new FileReader();r.onload=()=>{let o=null;try{o=JSON.parse(r.result)}catch(e){}
- if(!o||o.app!=='maths-adventure'||!Array.isArray(o.profiles)||!Array.isArray(o.records)){openSheet('<h2>That file is not a Maths Adventure backup</h2><p>Choose a file whose name starts with MathsAdventure_Backup.</p><div class="sheetbtns"><button class="primary" data-act="closesheet">Close</button></div>','--c:var(--geo);--cs:var(--geo-soft)');return}
+ if(o&&o.app==='maths-adventure'&&o.stage&&o.stage!==2){openSheet('<h2>That backup is from a different stage</h2><p>This is the Stage 2 app. Restore that file in the Maths Adventure app for its own stage. Choose a file whose name starts with MathsAdventure_Stage2_Backup.</p><div class="sheetbtns"><button class="primary" data-act="closesheet">Close</button></div>','--c:var(--geo);--cs:var(--geo-soft)');return}
+ if(!o||o.app!=='maths-adventure'||!Array.isArray(o.profiles)||!Array.isArray(o.records)){openSheet('<h2>That file is not a Maths Adventure backup</h2><p>Choose a file whose name starts with MathsAdventure_Stage2_Backup.</p><div class="sheetbtns"><button class="primary" data-act="closesheet">Close</button></div>','--c:var(--geo);--cs:var(--geo-soft)');return}
  S.restore=o;const newP=o.profiles.filter(p=>!profById(p.id)).length,have=new Set(DB.records.map(x=>x.id)),newR=o.records.filter(x=>!have.has(x.id)).length;
  openSheet(`<h2>Restore from backup</h2><p>This backup was made on <b>${fmtDT(o.at)}</b>. It has <b>${o.profiles.length} learner${o.profiles.length===1?'':'s'}</b> (${o.profiles.map(p=>esc(p.name)).join(', ')}) and <b>${o.records.length} tests</b>.</p>
  <div class="pbox"><h3>Add to what's here (recommended)</h3><p>Adds ${newP} learner${newP===1?'':'s'} and ${newR} test${newR===1?'':'s'} this device doesn't have yet. Nothing here is removed.</p><button class="primary" data-act="rmerge">Add to what's here</button></div>
