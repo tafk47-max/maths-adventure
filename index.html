@@ -476,6 +476,26 @@ details.rec summary::-webkit-details-marker{display:none}
 .shchart span{display:flex;flex-direction:column;align-items:center;width:88px}
 .shchart svg{width:82px;height:auto}
 .shchart b{font-size:12.5px}
+.pnav{background:var(--card);border:2px solid var(--ink);border-radius:22px;padding:14px 16px;margin:14px 0 6px;box-shadow:5px 5px 0 var(--c)}
+.pnavgrp+.pnavgrp{margin-top:13px;padding-top:13px;border-top:2px solid var(--line)}
+.pnavlab{display:block;font-size:12px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0}
+.tab{display:flex;align-items:center;gap:8px;justify-content:flex-start;text-align:left;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:9px 11px;font-weight:800;font-size:15px;line-height:1.15;cursor:pointer;min-height:48px}
+.tab .ti{font-size:18px;flex:none}
+.tab .tl{min-width:0}
+.tab.sel{background:var(--c);color:var(--btnink);border-color:var(--ink)}
+.lpick{display:flex;gap:8px;flex-wrap:wrap;margin:0}
+.chip.sel{border-color:var(--ink)}
+.rangecard{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin:14px 0}
+.rquick{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.rquick .tab{justify-content:center;text-align:center;font-size:14px;min-height:44px;padding:8px 6px}
+.rdates{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:10px;font-weight:800;font-size:15px}
+.rdates input{font:inherit;padding:7px 9px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);min-height:44px}
+.rnote{margin:9px 0 0;color:var(--muted);font-weight:700;font-size:14px}
+@media(min-width:720px){.tabs{grid-template-columns:repeat(4,minmax(0,1fr))}.pnav{padding:16px 18px}}
+@media(max-width:360px){.tabs{grid-template-columns:1fr}}
+.exprow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.expmsg{font-weight:700;color:var(--muted);font-size:15px}
 </style>
 </head>
 <body>
@@ -1184,6 +1204,133 @@ function vhGridGuide(){return `<div class="pgrid">${['↖️','⬆️','↗️',
 const vhStep=k=>{const m=String(k).match(/\d+/);return m?+m[0]:2};
 function vhFor(q){try{const t=(S.topic&&S.topic.id)||'',f=VH[t]&&VH[t][q.kind];if(!f)return null;const h=f(q);return h&&String(h).trim()?h:null}catch(e){return null}}
 
+/* ================= exporting a page ================= */
+const EXC={bg:'#F6F9FF',grid:'#E4EBF8',card:'#FFFFFF',ink:'#1F2A5A',muted:'#5E6890',line:'#D5DEEF',teal:'#0E9A9A',red:'#E8492B',purple:'#6D4FE6',sun:'#FFB81F',soft:'#D3F2F0',green:'#1E8F52'};
+const EXF='"Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif',EXB='Nunito, system-ui, sans-serif';
+function exWrap(x,text,left,top,maxw,lh){const words=String(text).split(' ');let line='',y=top;
+ words.forEach(w=>{const test=line?line+' '+w:w;if(x.measureText(test).width>maxw&&line){x.fillText(line,left,y);y+=lh;line=w}else line=test});
+ if(line){x.fillText(line,left,y);y+=lh}return y}
+function exLines(x,text,maxw){const words=String(text).split(' ');const out=[];let line='';
+ words.forEach(w=>{const t=line?line+' '+w:w;if(x.measureText(t).width>maxw&&line){out.push(line);line=w}else line=t});
+ if(line)out.push(line);return out}
+function exCard(x,y,W,h,col){rrect(x,52,y,W-104,h,26);x.fillStyle=EXC.card;x.fill();x.lineWidth=4;x.strokeStyle=EXC.ink;x.stroke();
+ rrect(x,52,y,10,h,6);x.fillStyle=col||EXC.teal;x.fill()}
+function exHead(x,y,t,W){x.textAlign='left';x.fillStyle=EXC.ink;x.font=`800 40px ${EXF}`;x.fillText(t,78,y+14);return y+34}
+async function drawAnalytics(){const A=S.an;if(!A)return null;
+ const W=1080,cv=document.createElement('canvas');cv.width=W;cv.height=5200;const x=cv.getContext('2d');
+ try{await Promise.race([Promise.all([document.fonts.load('800 40px "Baloo 2"'),document.fonts.load('700 26px "Nunito"')]),new Promise(r=>setTimeout(r,1500))])}catch(e){}
+ x.fillStyle=EXC.bg;x.fillRect(0,0,W,cv.height);x.strokeStyle=EXC.grid;x.lineWidth=2;
+ for(let i=0;i<=W;i+=40){x.beginPath();x.moveTo(i,0);x.lineTo(i,cv.height);x.stroke()}
+ for(let j=0;j<=cv.height;j+=40){x.beginPath();x.moveTo(0,j);x.lineTo(W,j);x.stroke()}
+ x.textBaseline='alphabetic';x.textAlign='left';
+ /* header */
+ let y=70;x.fillStyle=EXC.ink;x.font=`800 52px ${EXF}`;x.fillText('Progress report',52,y+40);
+ x.font=`700 30px ${EXB}`;x.fillStyle=EXC.muted;x.fillText(`${A.who} · Maths Adventure, Stage 2`,52,y+84);
+ x.fillText(`${fmtShort(S.range.from)} to ${fmtShort(S.range.to)}`,52,y+124);
+ y+=170;
+ /* snapshot tiles */
+ const tiles=[[String(A.R0.length),'Tests finished'],[A.timeTxt,'Time practising'],[`${A.tried} of ${TOPICS.length}`,'Topics tried'],[`${A.acc}%`,'Right first time'],[String(A.streak),'Days in a row']];
+ const tw=(W-104-3*14)/4;
+ tiles.forEach((t,i)=>{const col=i%4,row=Math.floor(i/4),tx=52+col*(tw+14),ty=y+row*118;
+  rrect(x,tx,ty,tw,104,20);x.fillStyle=EXC.card;x.fill();x.lineWidth=3;x.strokeStyle=EXC.line;x.stroke();
+  x.textAlign='center';x.fillStyle=EXC.teal;fitFont(x,`800 N ${EXF}`,40,tw-24,t[0]);x.fillText(t[0],tx+tw/2,ty+56);
+  x.fillStyle=EXC.muted;x.font=`700 19px ${EXB}`;x.fillText(t[1],tx+tw/2,ty+86)});
+ y+=Math.ceil(tiles.length/4)*118+26;x.textAlign='left';
+ /* what to do next */
+ if(A.next){x.font=`700 23px ${EXB}`;const L=exLines(x,A.next.why,W-160),h=120+L.length*30;
+  exCard(x,y,W,h,EXC.red);let iy=exHead(x,y+34,'What to do next',W);
+  x.font=`800 30px ${EXF}`;x.fillStyle=EXC.red;x.fillText(`${A.next.t.emoji} Topic ${A.next.t.num}: ${A.next.t.title}`,78,iy+28);
+  x.font=`700 23px ${EXB}`;x.fillStyle=EXC.ink;L.forEach((l,i)=>x.fillText(l,78,iy+66+i*30));y+=h+22}
+ /* strengths and focus */
+ {const lines=Math.max(A.strong.length,A.focus.length,1),h=120+lines*34;exCard(x,y,W,h,EXC.teal);let iy=exHead(x,y+34,'Strengths and focus areas',W);
+  const colw=(W-160)/2;
+  [['Going well',A.strong,EXC.green,78],['Needs more practice',A.focus,EXC.red,78+colw+12]].forEach(([title,list,col,cx])=>{
+   x.font=`800 24px ${EXF}`;x.fillStyle=col;x.fillText(title,cx,iy+30);
+   x.font=`700 21px ${EXB}`;x.fillStyle=EXC.ink;
+   if(!list.length){x.fillStyle=EXC.muted;x.fillText('Nothing yet.',cx,iy+66)}
+   else list.forEach((o,i)=>{const t=`${o.t.title} — ${o.acc}%`;fitFont(x,`700 N ${EXB}`,21,colw-20,t);x.fillText(t,cx,iy+66+i*34)})});
+  y+=h+22}
+ /* three sections */
+ {const h=110+A.SR.length*52;exCard(x,y,W,h,EXC.purple);let iy=exHead(x,y+34,'The three sections',W);
+  A.SR.forEach((r,i)=>{const by=iy+24+i*52,bx=400,bw=W-bx-110;
+   x.fillStyle=EXC.ink;fitFont(x,`700 N ${EXB}`,22,300,r.label);x.fillText(r.label,78,by+26);
+   rrect(x,bx,by+6,bw,26,13);x.fillStyle=EXC.line;x.fill();
+   if(r.n){rrect(x,bx,by+6,Math.max(8,bw*(r.v||0)/100),26,13);x.fillStyle=EXC.teal;x.fill()}
+   x.textAlign='right';x.fillStyle=EXC.ink;x.font=`800 22px ${EXF}`;x.fillText(r.n?r.v+'%':'–',W-64,by+27);x.textAlign='left'});
+  y+=h+22}
+ /* progress over time */
+ if(A.pts.length>=2){x.font=`700 22px ${EXB}`;const h=316+(A.trend?exLines(x,A.trend,W-160).length*28:0);exCard(x,y,W,h,EXC.teal);let iy=exHead(x,y+34,'Progress over time',W);
+  const gx=138,gy=iy+24,gw=W-228,gh=170;
+  x.strokeStyle=EXC.line;x.lineWidth=2;
+  [0,25,50,75,100].forEach(v=>{const py=gy+gh-gh*v/100;x.beginPath();x.moveTo(gx,py);x.lineTo(gx+gw,py);x.stroke();
+   x.fillStyle=EXC.muted;x.font=`700 18px ${EXB}`;x.textAlign='right';x.fillText(v+'%',gx-10,py+6);x.textAlign='left'});
+  const pts=A.pts.slice(-12),step=pts.length>1?gw/(pts.length-1):0;
+  x.strokeStyle=EXC.teal;x.lineWidth=5;x.beginPath();
+  pts.forEach((p,i)=>{const px=gx+i*step,py=gy+gh-gh*p.v/100;i?x.lineTo(px,py):x.moveTo(px,py)});x.stroke();
+  pts.forEach((p,i)=>{const px=gx+i*step,py=gy+gh-gh*p.v/100;x.beginPath();x.arc(px,py,8,0,7);x.fillStyle=EXC.teal;x.fill();x.strokeStyle=EXC.ink;x.lineWidth=3;x.stroke()});
+  x.fillStyle=EXC.muted;x.font=`700 17px ${EXB}`;x.textAlign='center';
+  pts.forEach((p,i)=>{if(pts.length<=6||i===0||i===pts.length-1||i===Math.floor(pts.length/2))x.fillText(p.label,gx+i*step,gy+gh+30)});
+  x.textAlign='left';
+  if(A.trend){x.fillStyle=EXC.ink;x.font=`700 22px ${EXB}`;exWrap(x,A.trend,78,gy+gh+68,W-160,28)}
+  y+=h+22}
+ /* topic map */
+ {const rows=TOPICS.length,h=130+rows*38;exCard(x,y,W,h,EXC.purple);let iy=exHead(x,y+34,'Topic map',W);
+  x.font=`700 19px ${EXB}`;x.fillStyle=EXC.muted;x.fillText('Each square is one test, newest on the right.',78,iy+24);
+  const sc=v=>v==null?EXC.line:[EXC.line,'#BFE7E4','#68C9C3',EXC.teal][v]||EXC.line;
+  TOPICS.forEach((t,i)=>{const ry=iy+54+i*38;
+   x.fillStyle=EXC.ink;x.font=`700 21px ${EXB}`;const lbl=`${t.emoji} ${t.title}`;fitFont(x,`700 N ${EXB}`,21,520,lbl);x.fillText(lbl,78,ry+20);
+   const ts=(A.T[t.id].tests||[]).slice(-5);
+   for(let c=0;c<5;c++){const r=ts[c-(5-ts.length)];rrect(x,W-330+c*56,ry,44,26,8);x.fillStyle=r?(r.st?sc(r.st):'#E6DEFB'):EXC.line;x.fill()}});
+  y+=h+22}
+ /* independence */
+ {const h=246,tot=Math.max(1,A.n);exCard(x,y,W,h,EXC.teal);let iy=exHead(x,y+34,'Independence',W);
+  const bw=W-160,bx=78,by=iy+26;let cx0=bx;
+  [[A.f1,EXC.teal,'Right first try'],[A.f2,EXC.sun,'Right on second try'],[A.f0,'#CFC3F2','Shown the answer']].forEach(([v,col])=>{const w=bw*v/tot;if(w>0){x.fillStyle=col;x.fillRect(cx0,by,w,40);cx0+=w}});
+  x.strokeStyle=EXC.ink;x.lineWidth=3;x.strokeRect(bx,by,bw,40);
+  x.font=`700 21px ${EXB}`;let lx=bx;
+  [[A.f1,EXC.teal,'Right first try'],[A.f2,EXC.sun,'Right on second try'],[A.f0,'#CFC3F2','Shown the answer']].forEach(([v,col,lab])=>{
+   x.fillStyle=col;rrect(x,lx,by+66,22,22,6);x.fill();x.fillStyle=EXC.ink;x.fillText(`${lab} (${v})`,lx+30,by+84);lx+=x.measureText(`${lab} (${v})`).width+70});
+  x.fillStyle=EXC.muted;x.font=`700 21px ${EXB}`;x.fillText(`The Hint button was used on ${pct(A.hints,A.n)}% of questions.`,bx,by+120);
+  y+=h+22}
+ /* how it felt */
+ if(A.feel.easy+A.feel.ok+A.feel.tricky){const h=150;exCard(x,y,W,h,EXC.sun);let iy=exHead(x,y+34,'How it felt',W);
+  const items=[['😊 Felt easy',A.feel.easy],['🙂 Felt OK',A.feel.ok],['🤔 Felt tricky',A.feel.tricky]],iw=(W-160)/3;
+  items.forEach((it,i)=>{const ix=78+i*iw;x.textAlign='center';x.fillStyle=EXC.ink;x.font=`800 34px ${EXF}`;x.fillText(String(it[1]),ix+iw/2-10,iy+46);
+   x.fillStyle=EXC.muted;x.font=`700 20px ${EXB}`;x.fillText(it[0],ix+iw/2-10,iy+76)});
+  x.textAlign='left';y+=h+22}
+ /* footer */
+ x.fillStyle=EXC.muted;x.font=`700 20px ${EXB}`;x.fillText(`Made on ${fmtShort(dayKey(Date.now()))} · Maths Adventure`,52,y+30);y+=60;
+ const out=document.createElement('canvas');out.width=W;out.height=Math.min(y,cv.height);
+ out.getContext('2d').drawImage(cv,0,0);return out}
+async function exportAnalyticsImage(){const m=document.getElementById('expmsg');if(m)m.textContent='Making the picture…';
+ let cv=null;try{cv=await drawAnalytics()}catch(e){cv=null}
+ if(!cv){if(m)m.textContent='The picture could not be made on this device.';return}
+ cv.toBlob(async b=>{if(!b){if(m)m.textContent='The picture could not be made on this device.';return}
+  const name=`MathsAdventure_Stage2_Progress_${(NAMEOF(S.an.whoRaw)||'Learner')}_${S.range.from}_to_${S.range.to}.png`;
+  if(m)m.textContent=await saveFile(name,b)},'image/png')}
+const NAMEOF=s=>String(s||'').replace(/[^\p{L}\p{N}]+/gu,'');
+function exportCurricHTML(){const m=document.getElementById('cmsg');const p=S.pp?profById(S.pp):null;if(!p){if(m)m.textContent='Choose a learner first.';return}
+ const body=curricHTML(p,true).replace(/<button class="linkbtn"[^>]*>([\s\S]*?)<\/button>/g,'$1');
+ const css=`:root{--ink:#1F2A5A;--muted:#5E6890;--line:#D5DEEF;--card:#fff;--bg:#F6F9FF;--c:#0E9A9A;--cs:#D3F2F0}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;font-size:16px;line-height:1.55;padding:18px}
+.wrap{max-width:1000px;margin:0 auto}h1{font-size:30px;margin:0 0 4px}h2{font-size:22px;margin:0 0 10px}h3{font-size:17px;margin:12px 0 4px}
+.psec{background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:16px 18px;margin:16px 0}
+.metrics{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.metric{flex:1 1 150px;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:10px 12px;text-align:center}
+.metric b{display:block;font-size:26px;color:var(--c)}.metric span{font-size:13px;color:var(--muted)}
+.means{background:var(--cs);border-radius:12px;padding:8px 12px;font-size:14.5px}
+.muted{color:var(--muted);font-size:14px}.isnot{color:#C0392B}
+.tablewrap{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+th,td{border-bottom:1.5px solid var(--line);padding:7px 9px;text-align:left;vertical-align:top}
+th{color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.04em}
+.cbadge{display:inline-block;border-radius:9px;padding:1px 8px;font-size:12.5px;font-weight:700}
+.cbadge.ok{background:#D9F2E4;color:#14663A}.cbadge.part{background:#FFEBD3;color:#9A5205}
+a{color:var(--c)}@media print{body{background:#fff}.psec{break-inside:avoid}}`;
+ const html=`<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow"><title>Curriculum match — ${esc(p.name)}</title><style>${css}</style></head>
+<body><div class="wrap"><h1>Curriculum match</h1><p class="muted">${esc(p.name)} · Maths Adventure, Stage 2 · ${fmtShort(S.range.from)} to ${fmtShort(S.range.to)} · saved ${fmtShort(dayKey(Date.now()))}</p>${body}</div></body></html>`;
+ const name=`MathsAdventure_Stage2_CurriculumMatch_${NAMEOF(p.name)||'Learner'}_${S.range.to}.html`;
+ saveFile(name,new Blob([html],{type:'text/html'})).then(r=>{if(m)m.textContent=r})}
+
 /* ================= storage ================= */
 const KEY3='mathsadv_v3';
 const DAY=86400000;
@@ -1618,22 +1765,30 @@ function helpHTML(){const t=S.topic,G=PARENT[t.id],q=S.view==='q'?S.qs[S.i]:null
  <div class="sheetbtns"><button class="primary" data-act="closesheet">${q?'Back to the question':'Back to the lesson'}</button>${q?'':'<button class="ghost" data-act="parents">Open the grown-ups page</button>'}</div>`}
 
 /* ================= grown-ups page ================= */
-function ensureRange(){if(S.range)return;const today=dayKey(Date.now());const first=DB.records.length?dayKey(Math.min(...DB.records.map(r=>r.s))):today;S.range={from:first,to:today}}
-function quickRange(d){const today=dayKey(Date.now());if(d==='all'){S.range=null;ensureRange();return}S.range={from:dayKey(Date.now()-(+d-1)*DAY),to:today}}
+function ensureRange(){if(S.range)return;const today=dayKey(Date.now());const first=DB.records.length?dayKey(Math.min(...DB.records.map(r=>r.s))):today;S.range={from:first,to:today,q:'all'}}
+function quickRange(d){const today=dayKey(Date.now());if(d==='all'){S.range=null;ensureRange();return}S.range={from:dayKey(Date.now()-(+d-1)*DAY),to:today,q:d}}
 const inRange=r=>{const k=dayKey(r.s);return k>=S.range.from&&k<=S.range.to};
 const recsOf=(pid,all)=>DB.records.filter(r=>r.p===pid&&(all||inRange(r))).sort((a,b)=>a.s-b.s);
-function rangeHTML(){return `<div class="range"><label>From <input type="date" id="rfrom" value="${S.range.from}"></label><label>To <input type="date" id="rto" value="${S.range.to}"></label></div><div class="range"><button class="ghost" data-act="rq" data-d="7">Last 7 days</button><button class="ghost" data-act="rq" data-d="30">Last 30 days</button><button class="ghost" data-act="rq" data-d="all">All time</button></div>`}
+function rangeHTML(){const q=S.range.q||'custom',qb=[['7','Last 7 days'],['30','Last 30 days'],['all','All time']];
+ const note=q==='all'?'Showing every round so far.':q==='custom'?`Showing ${fmtShort(S.range.from)} to ${fmtShort(S.range.to)}.`:`Showing the last ${q} days.`;
+ return `<div class="rangecard"><span class="pnavlab">Dates shown</span>
+ <div class="rquick">${qb.map(b=>`<button class="tab${q===b[0]?' sel':''}" data-act="rq" data-d="${b[0]}">${b[1]}</button>`).join('')}</div>
+ <div class="rdates"><label>From <input type="date" id="rfrom" value="${S.range.from}"></label><label>To <input type="date" id="rto" value="${S.range.to}"></label></div>
+ <p class="rnote">${note}</p></div>`}
 function renderParents(){if(!S.gate){gate(renderParents);return}hush();S.view='parents';S.armed='';applyTheme('classic');ensureRange();
  const ps=DB.profiles;if(!S.pp||!profById(S.pp))S.pp=(prof()||ps[0]||{}).id||null;const p=S.pp?profById(S.pp):null;
- const tabs=[['analytics','📊 Analytics'],['records','🗂️ Records'],['topics','📚 Topic guides'],['guide','💡 How to help'],['curric','📋 Curriculum match'],['data','⚙️ Settings and data'],['about','ℹ️ About this app']];
+ const tabsA=[['analytics','📊','Analytics'],['records','🗂️','Records'],['curric','📋','Curriculum match']];
+ const tabsB=[['topics','📚','Topic guides'],['guide','💡','How to help'],['data','⚙️','Settings and data'],['about','ℹ️','About this app']];
+ const tabBtn=t=>`<button class="tab${S.ptab===t[0]?' sel':''}" role="tab" aria-selected="${S.ptab===t[0]}" data-act="ptab" data-t="${t[0]}"><span class="ti">${t[1]}</span><span class="tl">${t[2]}</span></button>`;
  let body='';
  if(S.ptab==='about')body=`<section class="psec">${aboutHTML()}</section>`;
  else if(!p)body=`<section class="psec"><h2>No learners yet</h2><p>Add a learner from the first page to start.</p></section>${S.ptab==='data'?dataHTML(null):''}`;
  else if(S.ptab==='curric')body=curricHTML(p);else if(S.ptab==='analytics')body=analyticsHTML(p);else if(S.ptab==='records')body=recordsHTML(p);else if(S.ptab==='topics')body=topicsHTML(p);else if(S.ptab==='guide')body=guideHTML(p);else body=dataHTML(p);
  app.innerHTML=`<div style="--c:var(--geo);--cs:var(--geo-soft)"><div class="topbar"><button class="back" data-act="${prof()?'home':'who'}">Back</button></div>
  <div class="phead"><div class="hwrap">${hootSVG('normal','classic')}</div><div><p class="small">Maths Adventure, Stage 2</p><h1>For parents and teachers</h1><p class="muted">Choose a learner, then choose what you'd like to see.</p></div></div>
- ${ps.length?`<div class="lpick">${ps.map(x=>`<button class="chip${p&&x.id===p.id?' sel':''}" data-act="pp" data-id="${x.id}"><span class="miniav">${buddySVG(x.buddy)}</span>${esc(x.name)}</button>`).join('')}</div>`:''}
- <div class="tabs" role="tablist">${tabs.map(t=>`<button class="tab${S.ptab===t[0]?' sel':''}" role="tab" aria-selected="${S.ptab===t[0]}" data-act="ptab" data-t="${t[0]}">${t[1]}</button>`).join('')}</div>
+ <div class="pnav">${ps.length?`<div class="pnavgrp"><span class="pnavlab">Learner</span><div class="lpick">${ps.map(x=>`<button class="chip${p&&x.id===p.id?' sel':''}" data-act="pp" data-id="${x.id}"><span class="miniav">${buddySVG(x.buddy)}</span>${esc(x.name)}</button>`).join('')}</div></div>`:''}
+  <div class="pnavgrp"><span class="pnavlab">Progress</span><div class="tabs" role="tablist">${tabsA.map(tabBtn).join('')}</div></div>
+  <div class="pnavgrp"><span class="pnavlab">Guidance and settings</span><div class="tabs">${tabsB.map(tabBtn).join('')}</div></div></div>
  ${S.full?'<div class="notice">This device is running out of space for records. Make a backup and an Excel export, then remove old learners you no longer need.</div>':''}
  ${body}</div>`;window.scrollTo(0,0)}
 
@@ -1657,6 +1812,7 @@ function analyticsHTML(p){const R0=recsOf(p.id).filter(r=>r.tp!=='warm'&&r.m!=='
  const timeTxt=mins<60?`${mins} min`:`${Math.floor(mins/60)} h ${mins%60} min`;
  const accWord=acc>=85?"That's excellent.":acc>=70?"That's good, steady work.":acc>=50?"That's a fair start. Some topics need more practice.":"Many questions are still new. Short, regular practice will help most.";
  let h=rangeHTML();
+ h+=`<section class="psec"><h2>Save this page</h2><div class="exprow"><button class="primary" data-act="expimg">📸 Export as image</button><span class="expmsg" id="expmsg"></span></div><p class="muted">Saves a picture of this report that you can share or keep.</p></section>`;
  h+=`<section class="psec"><h2>Snapshot</h2><div class="metrics"><div class="metric"><b>${R0.length}</b><span>Tests finished</span></div><div class="metric"><b>${timeTxt}</b><span>Time practising</span></div><div class="metric"><b>${tried} of 15</b><span>Topics tried</span></div><div class="metric"><b>${acc}%</b><span>Right first time</span></div><div class="metric"><b>${streak}</b><span>Days in a row</span></div></div>
  <p class="means">💬 What this means: ${who} finished ${R0.length} test${R0.length===1?'':'s'} on ${days.size} different day${days.size===1?'':'s'} and got ${acc}% of questions right on the first try. ${accWord}</p></section>`;
  const K={};Q.forEach(q=>{const key=q.tp+'|'+q.k;K[key]=K[key]||{tp:q.tp,k:q.k,n:0,miss:0};K[key].n++;if(q.r!==1)K[key].miss++});
@@ -1706,13 +1862,15 @@ function analyticsHTML(p){const R0=recsOf(p.id).filter(r=>r.tp!=='warm'&&r.m!=='
  const tod={Morning:0,Afternoon:0,Evening:0,Night:0};R0.forEach(r=>{const hr=new Date(r.s).getHours();tod[hr>=5&&hr<12?'Morning':hr<17&&hr>=12?'Afternoon':hr>=17&&hr<21?'Evening':'Night']++});const topTod=Object.entries(tod).sort((a,b)=>b[1]-a[1])[0];
  h+=`<section class="psec"><h2>Practice habits</h2><div class="two"><div><h3>Last 5 weeks</h3><div class="cal">${cal.join('')}</div></div><div><h3>Time of day</h3>${barRows(Object.entries(tod).map(([k,v])=>({label:k,v:pct(v,R0.length),n:1})))}</div></div>
  <p class="means">💬 What this means: practised on ${active} of the 35 days up to ${fmtShort(S.range.to)}. Most practice happens in the ${topTod[0].toLowerCase()}. Short sessions on most days work better than one long session a week.</p></section>`;
+ const feel={easy:0,ok:0,tricky:0};R0.forEach(r=>{if(r.f&&feel[r.f]!==undefined)feel[r.f]++});
+ S.an={who,whoRaw:p.name,R0,n,f1,f2,f0,hints,acc,timeTxt,tried,streak,T,strong,focus,SR,pts,trend,next,feel};
  return h}
 
 
 /* ---- curriculum match ---- */
-function curricHTML(p){const R0=recsOf(p.id).filter(r=>r.m!=='chal'),Q=R0.flatMap(r=>r.q),who=esc(p.name);const cov=OBJ.filter(o=>o[3].startsWith('Covered')).length,part=OBJ.length-cov;
+function curricHTML(p,ex){const R0=recsOf(p.id).filter(r=>r.m!=='chal'),Q=R0.flatMap(r=>r.q),who=esc(p.name);const cov=OBJ.filter(o=>o[3].startsWith('Covered')).length,part=OBJ.length-cov;
  const subs={Nc:'Counting and sequences',Ni:'Whole numbers and calculating',Nm:'Money',Np:'Place value, ordering and rounding',Nf:'Fractions',Gt:'Time',Gg:'Shapes and measuring',Gp:'Position and movement',Ss:'Statistics',Sp:'Probability'};
- let h=rangeHTML()+`<section class="psec"><h2>How Maths Adventure matches Stage 2</h2><div class="metrics"><div class="metric"><b>${OBJ.length}</b><span>Stage 2 learning objectives</span></div><div class="metric"><b>${cov}</b><span>Practised fully in the app</span></div><div class="metric"><b>${part}</b><span>In the app, finished with a home activity</span></div></div>
+ let h=(ex?'':rangeHTML()+`<section class="psec"><h2>Save this page</h2><div class="exprow"><button class="primary" data-act="expcurric">📄 Export as HTML</button><span class="expmsg" id="cmsg"></span></div><p class="muted">Saves this page as a file that opens in any browser and prints to PDF.</p></section>`)+`<section class="psec"><h2>How Maths Adventure matches Stage 2</h2><div class="metrics"><div class="metric"><b>${OBJ.length}</b><span>Stage 2 learning objectives</span></div><div class="metric"><b>${cov}</b><span>Practised fully in the app</span></div><div class="metric"><b>${part}</b><span>In the app, finished with a home activity</span></div></div>
  <p class="means">💬 What this means: every Stage 2 learning objective has questions in the app. ${part} of them also need something hands-on, like drawing a line or weighing real objects, and the topic guides explain how.</p>
  <p class="muted">Checked against the Cambridge Primary Mathematics Curriculum Framework 0096, version 2.1 (published June 2025). The codes are the official objective codes, and the descriptions are in our own words. Maths Adventure is an independent app and <b class="isnot">IS NOT</b> affiliated with, endorsed by or connected to Cambridge University Press &amp; Assessment. "Cambridge" is a trademark of its owner, used here only to describe the topics covered. The order of topics in the app is our suggestion, not an official teaching order. <a href="https://www.cambridgeinternational.org/programmes-and-qualifications/cambridge-primary/curriculum/mathematics/" target="_blank" rel="noopener noreferrer">Official curriculum page</a></p></section>`;
  STRANDS.forEach((st,si)=>{const letter=['N','G','S'][si];const rows=OBJ.filter(o=>o[0][1]===letter);
@@ -1889,6 +2047,8 @@ document.addEventListener('click',e=>{
  case 'pp':S.pp=b.dataset.id;renderParents();break;
  case 'ptab':S.ptab=b.dataset.t;renderParents();break;
  case 'rq':quickRange(b.dataset.d);renderParents();break;
+  case 'expimg':exportAnalyticsImage();break;
+  case 'expcurric':exportCurricHTML();break;
  case 'makepic':makePic();break;
  case 'savepic':savePic();break;
  case 'psavename':{const v=cleanName(document.getElementById('pname').value),m=document.getElementById('pnamemsg'),p=profById(S.pp);if(!v){m.textContent='Type a name first.';break}p.name=v;save();renderParents();break}
@@ -1902,7 +2062,7 @@ document.addEventListener('click',e=>{
  case 'rreplace':if(S.armed!=='rrep'){S.armed='rrep';b.textContent='Tap again to replace everything'}else{S.armed='';restoreReplace()}break;
  }});
 document.addEventListener('change',e=>{const id=e.target&&e.target.id;
- if(id==='rfrom'||id==='rto'){const f=document.getElementById('rfrom').value,t=document.getElementById('rto').value;if(f&&t&&f<=t){S.range={from:f,to:t};renderParents()}}
+ if(id==='rfrom'||id==='rto'){const f=document.getElementById('rfrom').value,t=document.getElementById('rto').value;if(f&&t&&f<=t){S.range={from:f,to:t,q:'custom'};renderParents()}}
  if(id==='restorein'&&e.target.files&&e.target.files[0]){readRestore(e.target.files[0]);e.target.value=''}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheet()});
 if(prof())renderHome();else if(DB.profiles.length)renderWho();else renderWelcome();
