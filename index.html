@@ -496,6 +496,47 @@ details.rec summary::-webkit-details-marker{display:none}
 @media(max-width:360px){.tabs{grid-template-columns:1fr}}
 .exprow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .expmsg{font-weight:700;color:var(--muted);font-size:15px}
+.groups .grp:empty{min-width:92px;min-height:66px;display:inline-block}
+.ivh-count{font-weight:800;text-align:center;margin:8px 0 0;font-size:16px}
+.ivh-pool{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;min-height:50px;padding:6px;border:2px dashed var(--line);border-radius:12px;background:var(--card)}
+.ivh-drag{font-size:28px;line-height:1;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none}
+.ivh-drag.lifting{opacity:.25}
+.ivh-ghost{position:fixed;z-index:9999;font-size:34px;line-height:1;pointer-events:none;transform:scale(1.15);filter:drop-shadow(0 4px 6px rgba(0,0,0,.3))}
+.ivh-groups{display:flex;gap:8px;justify-content:center;margin-top:10px;flex-wrap:wrap}
+.ivh-grp{flex:1 1 110px;min-height:84px;border:3px solid var(--c);border-radius:16px;padding:6px;display:flex;flex-wrap:wrap;gap:4px;align-content:flex-start;justify-content:center;background:var(--card)}
+.ivh-groups.many .ivh-grp{flex-basis:64px;min-height:70px}
+.ivh-grp b{width:100%;text-align:center;font-size:12px;color:var(--muted)}
+.ivh-grp .ivh-drag{font-size:24px}
+.ivh-drop.over{outline:3px solid var(--sun);outline-offset:2px}
+.ivh-tf{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.ivh-frame{display:grid;grid-template-columns:repeat(5,32px);grid-auto-rows:32px;gap:3px;background:var(--card);border:3px solid var(--ink);border-radius:10px;padding:3px}
+.ivh-frame i{border:1.5px solid var(--line);border-radius:6px;display:grid;place-items:center;font-size:19px;font-style:normal;cursor:pointer}
+.ivh-frame i.f{cursor:default}
+.ivh-track{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:3px;max-width:440px;margin:0 auto}
+.ivh-track span{height:34px;font-size:14px;display:grid;place-items:center;border:2px solid var(--line);border-radius:8px;font-weight:800;background:var(--card);cursor:pointer}
+.ivh-track span.trail{background:var(--cs);border-color:var(--c)}
+.ivh-track span.goal{border-color:var(--sun);border-width:3px}
+.ivh-track span.on{background:var(--c);color:#fff;border-color:var(--ink)}
+.ivh-to{display:flex;gap:6px;justify-content:center;align-items:flex-end;flex-wrap:nowrap}
+.ivh-rodrow{display:flex;gap:4px;align-items:flex-end}
+.ivh-rod{display:grid;grid-template-columns:16px;grid-auto-rows:12px;gap:1px;padding:3px;border:2.5px solid var(--ink);border-radius:7px;background:var(--card);cursor:pointer}
+.ivh-rod i{background:var(--c);border-radius:2px;display:block}
+.ivh-onesbox{display:flex;flex-direction:column;align-items:center;gap:4px;padding:5px 6px;border:2px dashed var(--line);border-radius:12px;background:var(--card)}
+.ivh-onesbox.fresh{border-color:var(--c);border-style:solid}
+.ivh-onesbox b{font-size:10px;line-height:1.2;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;text-align:center;max-width:100px}
+.ivh-ones{display:grid;grid-template-columns:repeat(5,17px);gap:3px}
+.ivh-ones i{height:17px;background:var(--sun);border:1.5px solid var(--ink);border-radius:4px;display:block;cursor:pointer}
+.ivh-ones i.gone{background:var(--line);border-style:dashed;opacity:.55}
+.ivh-clockwrap{display:flex;flex-direction:column;align-items:center;gap:6px}
+.ivh-modes{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.ivh-mode.on{background:var(--c);color:#fff;border-color:var(--ink)}
+.ivh-clock{width:230px;max-width:100%;height:auto;touch-action:none;cursor:pointer}
+.ivh-carroll{border-collapse:collapse;margin:6px auto 0;background:var(--card)}
+.ivh-carroll th,.ivh-carroll td{border:2.5px solid var(--ink);padding:5px 7px;font-weight:800;font-size:13px;text-align:center;min-width:88px;height:62px;vertical-align:middle}
+.ivh-carroll th{background:var(--cs);font-size:12.5px}
+.ivh-carroll td{cursor:pointer;position:relative}
+.ivh-carroll td small{position:absolute;top:3px;left:6px;font-size:11px;color:var(--muted)}
+.ivh-chip{display:inline-block;background:var(--sun);color:#1F2A5A;border:2px solid var(--ink);border-radius:10px;padding:1px 10px;font-weight:800;font-size:20px}
 </style>
 </head>
 <body>
@@ -1040,6 +1081,7 @@ function vhBalance(a,b,leftDown){const t=leftDown?-12:12;return `<svg viewBox="0
 function vhGlass(f){const top=18,bot=150,y=bot-(bot-top)*f;return `<svg viewBox="0 0 110 160" class="vglass" role="img" aria-label="a glass"><rect x="20" y="${y}" width="70" height="${bot-y}" fill="#6FB6F5"/><path d="M20,${top} L20,${bot} Q20,156 26,156 L84,156 Q90,156 90,${bot} L90,${top}" fill="none" stroke="var(--ink)" stroke-width="5" stroke-linejoin="round"/></svg>`}
 function vhLen(L){const u=20,W=60+12*u;let s=`<svg viewBox="0 0 ${W} ${L.length*46+6}" class="vhsvg" style="max-width:320px">`;L.forEach((d,i)=>{s+=`<text x="6" y="${i*46+33}" font-size="19" font-weight="800" fill="var(--ink)" font-family="Baloo 2, sans-serif">${d[0]}</text><rect x="40" y="${i*46+12}" width="${d[1]*u}" height="28" rx="9" fill="${d[2]}" stroke="var(--ink)" stroke-width="2.5"/>`});return s+'</svg>'}
 
+function vhShare(n,g,e){e=e||'🍓';return `<div class="vhrow">${objs(Math.min(n,20),e)}</div><div class="groups">${[...Array(g)].map(()=>'<span class="grp"></span>').join('')}</div>`+vhCap(`Deal them into the ${g} groups, one at a time, until none are left. Then count one group.`)}
 /* which picture goes with which question */
 const VH={
 count:{'Quick look (how many at a glance)':q=>`<div class="vhrow">${dotsSVG(3)}<b>+</b>${dotsSVG(4)}</div>`+vhCap('Break the dots into small groups you already know, then add them.'),
@@ -1331,6 +1373,177 @@ a{color:var(--c)}@media print{body{background:#fff}.psec{break-inside:avoid}}`;
  const name=`MathsAdventure_Stage2_CurriculumMatch_${NAMEOF(p.name)||'Learner'}_${S.range.to}.html`;
  saveFile(name,new Blob([html],{type:'text/html'})).then(r=>{if(m)m.textContent=r})}
 
+/* ================= interactive visual hints ================= */
+/* A visual hint can be a picture (a string) or something to tap and drag: {w:box=>...}.
+   The child does the work. The widget never says the answer out loud. */
+const IV=(w)=>({w});
+const ivEl=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e};
+const ivCap=(box,t)=>{const p=ivEl('p','vhcap',t);box.appendChild(p);return p};
+const ivLine=(box,t)=>{const p=ivEl('p','ivh-count',t);box.appendChild(p);return p};
+
+/* 1. drag things into equal groups */
+function ivDrag(n,g,opt){opt=opt||{};return IV(box=>{
+ const e=opt.e||'🍓';
+ const pool=ivEl('div','ivh-pool ivh-drop');
+ for(let i=0;i<n;i++)pool.appendChild(ivEl('span','ivh-drag',e));
+ const gs=ivEl('div','ivh-groups'+(g>=4?' many':''));
+ for(let k=0;k<g;k++){const d=ivEl('div','ivh-grp ivh-drop');d.appendChild(ivEl('b',null,'group '+(k+1)));gs.appendChild(d)}
+ box.append(pool,gs);
+ const line=ivLine(box,`${n} to share`);
+ const cap=ivCap(box,opt.left?'Drag one into each group, then go round again. Stop when you cannot give every group one more.':'Drag one into each group, then go round again, until none are left.');
+ const update=()=>{const left=pool.querySelectorAll('.ivh-drag').length;const per=[...gs.children].map(x=>x.querySelectorAll('.ivh-drag').length);const same=per.every(v=>v===per[0]);
+  if(opt.left&&left<g&&same){line.textContent=left?`${left} cannot be shared. They are left over.`:'All shared. None left over.';return}
+  if(left){line.textContent=`${left} left to share`;return}
+  line.textContent=same?(opt.then||'All shared. Now count one group.'):'The groups are not the same yet. Move some across.'};
+ let item=null,ghost=null,dx=0,dy=0;
+ const zoneAt=(x,y)=>{if(ghost)ghost.style.display='none';const u=document.elementFromPoint(x,y);if(ghost)ghost.style.display='';const z=u&&u.closest('.ivh-drop');return z&&box.contains(z)?z:null};
+ box.addEventListener('pointerdown',ev=>{const t=ev.target.closest('.ivh-drag');if(!t)return;ev.preventDefault();
+  item=t;const r=t.getBoundingClientRect();dx=ev.clientX-r.left;dy=ev.clientY-r.top;
+  ghost=t.cloneNode(true);ghost.className='ivh-ghost';ghost.style.left=r.left+'px';ghost.style.top=r.top+'px';document.body.appendChild(ghost);
+  t.classList.add('lifting');try{box.setPointerCapture(ev.pointerId)}catch(_){}});
+ box.addEventListener('pointermove',ev=>{if(!ghost)return;ev.preventDefault();ghost.style.left=(ev.clientX-dx)+'px';ghost.style.top=(ev.clientY-dy)+'px';
+  box.querySelectorAll('.ivh-drop').forEach(z=>z.classList.remove('over'));const z=zoneAt(ev.clientX,ev.clientY);if(z)z.classList.add('over')});
+ const end=ev=>{if(!ghost)return;const z=zoneAt(ev.clientX,ev.clientY);if(z)z.appendChild(item);
+  item.classList.remove('lifting');ghost.remove();ghost=null;item=null;box.querySelectorAll('.ivh-drop').forEach(x=>x.classList.remove('over'));update()};
+ box.addEventListener('pointerup',end);box.addEventListener('pointercancel',end);
+})}
+
+/* 2. fill the ten frame: a red ones are already in, tap to add blue ones */
+function ivFrame(a,b,opt){opt=opt||{};const total=opt.upto||Math.max(10,Math.ceil((a+b)/10)*10);return IV(box=>{
+ const tf=ivEl('div','ivh-tf');const cells=[];
+ for(let f=0;f<total/10;f++){const fr=ivEl('span','ivh-frame');for(let i=0;i<10;i++){const c=ivEl('i');fr.appendChild(c);cells.push(c)}tf.appendChild(fr)}
+ cells.forEach((c,i)=>{if(i<a){c.textContent='🔴';c.classList.add('f')}});
+ box.appendChild(tf);
+ const fillTo=!!opt.upto;let placed=0;
+ const line=ivLine(box,fillTo?'Tap the empty squares to fill them.':`${b} blue ones to put in`);
+ ivCap(box,fillTo?`Keep tapping until every square is full. Count the blue ones you put in.`:'Tap the empty squares to put the blue ones in. Fill the first frame to 10 first.');
+ tf.addEventListener('click',ev=>{const c=ev.target.closest('i');if(!c||c.textContent)return;
+  if(!fillTo&&placed>=b)return;c.textContent='🔵';placed++;
+  if(fillTo){line.textContent=cells.every(x=>x.textContent)?'Full! How many blue ones did you put in?':`${placed} blue`}
+  else line.textContent=placed<b?`${b-placed} blue ones to put in`:'All in. Now count them all.'});
+})}
+
+/* 3. hop along the number track, one tap per jump */
+function ivTrack(start,opt){return IV(box=>{
+ const lo=0,hi=20,dir=opt.dir;
+ const tr=ivEl('div','ivh-track');const cells={};
+ for(let v=lo;v<=hi;v++){const s=ivEl('span',null,String(v));s.dataset.v=v;cells[v]=s;tr.appendChild(s)}
+ if(opt.goal!=null)cells[opt.goal].classList.add('goal');
+ cells[start].classList.add('on');box.appendChild(tr);
+ let pos=start,made=0;
+ const say=()=>{if(opt.jumps){line.textContent=made<opt.jumps?`${made} of ${opt.jumps} jumps`:`${opt.jumps} jumps. Where did you land?`}
+  else line.textContent=pos===opt.goal?`You got to ${opt.goal}. How many jumps did you make?`:`${made} jump${made===1?'':'s'}`};
+ const line=ivLine(box,'');say();
+ ivCap(box,opt.jumps?`Tap the next number ${dir<0?'back':'on'} to make one jump.`:`Tap the next number ${dir<0?'back':'on'} to jump. Stop on the number with the yellow edge.`);
+ tr.addEventListener('click',ev=>{const s=ev.target.closest('span');if(!s)return;
+  if(opt.jumps&&made>=opt.jumps)return;if(opt.goal!=null&&pos===opt.goal)return;
+  const v=+s.dataset.v;if(v!==pos+dir)return;
+  cells[pos].classList.remove('on');cells[pos].classList.add('trail');pos=v;cells[pos].classList.add('on');made++;say()});
+})}
+
+/* 4. break a ten into ones, then tap ones to take them away */
+function ivBreak(a,b){return IV(box=>{
+ const t0=Math.floor(a/10),o0=a%10;
+ const wrap=ivEl('div','ivh-to');
+ const rods=ivEl('span','ivh-rodrow');
+ const mkRod=()=>{const r=ivEl('span','ivh-rod');for(let i=0;i<10;i++)r.appendChild(ivEl('i'));return r};
+ for(let i=0;i<t0;i++)rods.appendChild(mkRod());
+ const had=ivEl('span','ivh-onesbox');had.appendChild(ivEl('b',null,'the ones you had'));const hadOnes=ivEl('span','ivh-ones');had.appendChild(hadOnes);
+ for(let i=0;i<o0;i++)hadOnes.appendChild(ivEl('i'));
+ const fresh=ivEl('span','ivh-onesbox fresh');fresh.appendChild(ivEl('b',null,'from the broken ten'));const freshOnes=ivEl('span','ivh-ones');fresh.appendChild(freshOnes);
+ wrap.append(rods,had);box.appendChild(wrap);
+ let broken=false,taken=0;
+ const tens=()=>rods.querySelectorAll('.ivh-rod').length,ones=()=>o0+(broken?10:0)-taken;
+ const tl=n=>`${n} ten${n===1?'':'s'}`;
+ const line=ivLine(box,b?`${tl(t0)} and ${o0} ones. ${o0} ones is not enough to take ${b} away.`:`${tl(t0)} and ${o0} ones.`);
+ const cap=ivCap(box,'Tap a ten to break it into 10 ones.');
+ wrap.addEventListener('click',ev=>{
+  const r=ev.target.closest('.ivh-rod');
+  if(r&&!broken){r.remove();rods.after(fresh);for(let i=0;i<10;i++)freshOnes.appendChild(ivEl('i'));broken=true;
+   line.textContent=`${tl(tens())} and ${o0+10} ones.`;
+   cap.textContent=b?`Now there are enough ones. Tap ${b} ones to take them away.`:'Count the tens and the ones now.';return}
+  const one=ev.target.closest('.ivh-ones i');
+  if(b&&broken&&one&&!one.classList.contains('gone')&&taken<b){one.classList.add('gone');taken++;
+   line.textContent=`${taken} taken away.`;
+   if(taken===b)cap.textContent=`All ${b} are gone. Count what is left: the tens and the ones.`}});
+})}
+
+/* 5. clock: choose a hand, then drag it round */
+function ivClock(opt){opt=opt||{};return IV(box=>{
+ let h=12,m=0,mode='minute';const step=opt.step||5;
+ const wrap=ivEl('div','ivh-clockwrap');
+ const modes=ivEl('div','ivh-modes');
+ const bH=ivEl('button','ghost ivh-mode','🟠 Hour hand');bH.dataset.mode='hour';
+ const bM=ivEl('button','ghost ivh-mode','🟣 Minute hand');bM.dataset.mode='minute';modes.append(bH,bM);
+ const NS='http://www.w3.org/2000/svg';const el=(n,at)=>{const e=document.createElementNS(NS,n);for(const k in at)e.setAttribute(k,at[k]);return e};
+ const svg=el('svg',{viewBox:'0 0 240 240',class:'ivh-clock'});
+ svg.appendChild(el('circle',{cx:120,cy:120,r:92,fill:'var(--card)',stroke:'var(--ink)','stroke-width':5}));
+ for(let i=0;i<60;i++){const a=-Math.PI/2+i*Math.PI/30,r1=i%5?86:81;svg.appendChild(el('line',{x1:120+r1*Math.cos(a),y1:120+r1*Math.sin(a),x2:120+90*Math.cos(a),y2:120+90*Math.sin(a),stroke:'var(--muted)','stroke-width':i%5?1.2:2.5}))}
+ for(let i=0;i<12;i++){const a=-Math.PI/2+i*Math.PI/6;
+  const t=el('text',{x:120+65*Math.cos(a),y:120+65*Math.sin(a)+7,'text-anchor':'middle','font-size':20,'font-weight':800,fill:'var(--ink)','font-family':'Baloo 2,sans-serif'});t.textContent=i===0?12:i;svg.appendChild(t);
+  if(opt.fives){const o=el('text',{x:120+108*Math.cos(a),y:120+108*Math.sin(a)+6,'text-anchor':'middle','font-size':14,'font-weight':800,fill:'var(--c)','font-family':'Baloo 2,sans-serif'});o.textContent=i*5;svg.appendChild(o)}}
+ const mh=el('line',{x1:120,y1:120,x2:120,y2:48,stroke:'#7A4FD0','stroke-width':6,'stroke-linecap':'round'});
+ const hh=el('line',{x1:120,y1:120,x2:120,y2:72,stroke:'#F2711C','stroke-width':10,'stroke-linecap':'round'});
+ const mk=el('circle',{cx:120,cy:48,r:11,fill:'#7A4FD0'}),hk=el('circle',{cx:120,cy:72,r:13,fill:'#F2711C'});
+ svg.append(hh,mh,hk,mk,el('circle',{cx:120,cy:120,r:7,fill:'var(--ink)'}));
+ const read=ivEl('p','ivh-count'),cap=ivEl('p','vhcap');
+ const draw=()=>{const ma=-Math.PI/2+(m/60)*2*Math.PI,ha=-Math.PI/2+((h%12)/12+m/720)*2*Math.PI;
+  const mx=120+72*Math.cos(ma),my=120+72*Math.sin(ma),hx=120+48*Math.cos(ha),hy=120+48*Math.sin(ha);
+  mh.setAttribute('x2',mx);mh.setAttribute('y2',my);mk.setAttribute('cx',mx);mk.setAttribute('cy',my);
+  hh.setAttribute('x2',hx);hh.setAttribute('y2',hy);hk.setAttribute('cx',hx);hk.setAttribute('cy',hy);
+  mk.setAttribute('opacity',mode==='minute'?.35:0);hk.setAttribute('opacity',mode==='hour'?.35:0);
+  mh.setAttribute('stroke-width',mode==='minute'?8:5);hh.setAttribute('stroke-width',mode==='hour'?12:8);
+  bH.classList.toggle('on',mode==='hour');bM.classList.toggle('on',mode==='minute');
+  read.textContent='Your clock says: '+timeWords(h,m);
+  cap.textContent=mode==='minute'?'Drag round the clock to move the long purple hand.':'Drag round the clock to move the short orange hand.'};
+ const frac=ev=>{const r=svg.getBoundingClientRect(),x=(ev.clientX-r.left)*240/r.width-120,y=(ev.clientY-r.top)*240/r.height-120;let a=Math.atan2(y,x)+Math.PI/2;if(a<0)a+=2*Math.PI;return a/(2*Math.PI)};
+ const move=ev=>{const f=frac(ev);if(mode==='minute')m=(Math.round(f*60/step)*step)%60;else{let hr=Math.round(f*12-m/60)%12;if(hr<=0)hr+=12;h=hr}draw()};
+ let dragging=false;
+ svg.addEventListener('pointerdown',ev=>{ev.preventDefault();dragging=true;try{svg.setPointerCapture(ev.pointerId)}catch(_){}move(ev)});
+ svg.addEventListener('pointermove',ev=>{if(dragging){ev.preventDefault();move(ev)}});
+ const stop=()=>{dragging=false};svg.addEventListener('pointerup',stop);svg.addEventListener('pointercancel',stop);
+ modes.addEventListener('click',ev=>{const b=ev.target.closest('.ivh-mode');if(!b)return;mode=b.dataset.mode;draw()});
+ const tip=ivEl('p','vhcap',opt.tip||'Make your clock look like the clock in the question. Then read what your clock says.');
+ wrap.append(modes,svg,read,cap,tip);box.appendChild(wrap);draw();
+})}
+
+/* 6. put the number into the Carroll diagram */
+function ivCarroll(n,cols){return IV(box=>{
+ box.appendChild(ivEl('p','ivh-count','')).innerHTML=`Put this number in a box: <span class="ivh-chip">${n}</span>`;
+ const t=ivEl('table','ivh-carroll');
+ t.innerHTML=`<tr><th></th><th>${cols[0]}</th><th>${cols[1]}</th></tr><tr><th>Even</th><td data-b="A"><small>A</small></td><td data-b="B"><small>B</small></td></tr><tr><th>Odd</th><td data-b="C"><small>C</small></td><td data-b="D"><small>D</small></td></tr>`;
+ box.appendChild(t);
+ const cap=ivCap(box,`Is ${n} even or odd? Is it ${cols[0].toLowerCase()}? Tap the box you think.`);
+ t.addEventListener('click',ev=>{const td=ev.target.closest('td');if(!td)return;
+  t.querySelectorAll('td').forEach(x=>{x.innerHTML=`<small>${x.dataset.b}</small>`});td.innerHTML=`<small>${td.dataset.b}</small><span class="ivh-chip">${n}</span>`;
+  cap.textContent=`You put ${n} in box ${td.dataset.b}. Look at its row and its column. Do both match ${n}?`});
+})}
+
+/* which questions get something to tap or drag (Stage 2) */
+const IN=q=>(String(q.text).match(/\d+/g)||[]).map(Number);
+const ivOver=(tid,kind,fn)=>{if(!VH[tid])VH[tid]={};const old=VH[tid][kind];VH[tid][kind]=q=>{let r=null;try{r=fn(q)}catch(e){r=null}return r||(old?old(q):null)}};
+ivOver('frac','Half of a number',q=>{const n=IN(q)[0];return n<=20?ivDrag(n,2):null});
+ivOver('frac','Quarter of a number',q=>{const n=IN(q)[0];return n<=20?ivDrag(n,4):null});
+ivOver('frac','Three quarters of a number',q=>{const n=IN(q)[0];return n<=20?ivDrag(n,4,{then:'All shared. Now count 3 of the groups.'}):null});
+ivOver('frac','Challenge: one third',q=>{const n=IN(q)[0];return n<=21?ivDrag(n,3):null});
+ivOver('div','Halving',q=>{const n=IN(q)[0];return n<=20?ivDrag(n,2):null});
+ivOver('div','Sharing equally',q=>{const [n,g]=IN(q);return n<=25&&g<=5?ivDrag(n,g,{e:'⭐'}):null});
+ivOver('div','Challenge: some left over',q=>{const [n,g]=IN(q);return n<=20&&g<=5?ivDrag(n,g,{e:'🍬',left:true}):null});
+ivOver('add','Adding within 20',q=>{const [a,b]=IN(q);return a+b<=20?ivFrame(a,b):null});
+ivOver('add','Pairs that make 20',q=>{const [a,t]=IN(q);return t===20?ivFrame(a,0,{upto:20}):null});
+ivOver('sub','Taking away within 20',q=>{const [a,b]=IN(q);return a<=20?ivTrack(a,{dir:-1,jumps:b}):null});
+ivOver('sub','Finding the difference',q=>{const n=IN(q).slice(0,2).sort((x,y)=>x-y);return n[1]<=20?ivTrack(n[0],{dir:1,goal:n[1]}):null});
+ivOver('sub','Missing number in taking away',q=>{const [a,c]=IN(q);return a<=20?ivTrack(a,{dir:-1,goal:c}):null});
+ivOver('sub','Challenge: taking away across a ten',q=>{const [a,b]=IN(q);return a<60&&b>a%10?ivBreak(a,b):null});
+ivOver('place','Regrouping tens and ones',q=>{const a=IN(q)[0];return a>=10&&a<70?ivBreak(a,0):null});
+ivOver('time','Reading a clock to 5 minutes',()=>ivClock({fives:true}));
+ivOver('time','Matching a clock to digital time',()=>ivClock({fives:true}));
+ivOver('data','Carroll diagram',q=>{const m=/Which box does (\d+) go in/.exec(q.text);return m?ivCarroll(+m[1],['Less than 20','20 or more']):null});
+ivOver('warm','Stage 1: adding within 20',q=>{const [a,b]=IN(q);return a+b<=20?ivFrame(a,b):null});
+ivOver('warm','Stage 1: pairs to 10',q=>{const [a]=IN(q);return ivFrame(a,0,{upto:10})});
+ivOver('warm','Stage 1: taking away within 20',q=>{const [a,b]=IN(q);return ivTrack(a,{dir:-1,jumps:b})});
+ivOver('warm','Stage 1: half of a number',q=>{const n=IN(q)[0];return n<=20?ivDrag(n,2):null});
+
 /* ================= storage ================= */
 const KEY3='mathsadv_v3';
 const DAY=86400000;
@@ -1594,7 +1807,7 @@ function gateGo(){const v=+(document.getElementById('gatein').value||'').trim();
 
 /* ================= about ================= */
 const _u=s=>{try{return Array.from(atob(s)).map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(7+i%5))).join('')}catch(e){return ''}};
-const APPVER='1.1',APPDATE='21 September 2026',OWNER=_u('U2lvYm5iZQ=='),LINKEDIN=_u('b3x9eng9JyZ9fHAmZWNlbG1tY2Upa2ZnJG5mJn5qYWBsb2ZyZGVrYyg=');
+const APPVER='1.2',APPDATE='21 September 2026',OWNER=_u('U2lvYm5iZQ=='),LINKEDIN=_u('b3x9eng9JyZ9fHAmZWNlbG1tY2Upa2ZnJG5mJn5qYWBsb2ZyZGVrYyg=');
 const LIlink=()=>`<a href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn profile</a>`;
 function aboutHTML(){return `<h2>ℹ️ About this app</h2>
  <h3>About</h3><p>Maths Adventure Stage 2, version ${APPVER}. Produced ${APPDATE}. Created by ${OWNER}. Connect or get in touch: ${LIlink()}</p>
@@ -1903,7 +2116,7 @@ function topicsHTML(p){return `<section class="psec"><h2>Topic guides</h2><p cla
 function guideHTML(p){const who=esc(p.name);return `<section class="psec"><h2>How a good session works</h2><ol class="steps">
  <li><b>Read the lesson together.</b> Tap 🔊 to hear it read aloud. Talk through both examples, and ask ${who} to explain one back to you.</li>
  <li><b>Let ${who} answer the 10 questions.</b> Sit nearby, but let them try each question on their own first.</li>
- <li><b>When they get stuck, suggest the 💡 Hint button first.</b> After that, a <b>🖼️ Visual hint</b> button appears with a picture to work the answer out from. Neither one gives the answer away. On any question, the 👪 Grown-ups button shows you what to say and, only if needed, the answer.</li>
+ <li><b>When they get stuck, suggest the 💡 Hint button first.</b> After that, a <b>🖼️ Visual hint</b> button appears. On some questions it shows a picture. On others it gives your child something to tap or drag, like sharing strawberries into groups or moving the clock hands. None of them gives the answer away. On any question, the 👪 Grown-ups button shows you what to say and, only if needed, the answer.</li>
  <li><b>Celebrate the effort at the end.</b> Make the result picture together, whatever the score.</li>
  <li><b>Check the Analytics tab once a week.</b> Follow "What to do next" and try one home activity from the topic guides.</li></ol></section>
  <section class="psec"><h2>Start with real objects</h2><p>Children learn a new idea best in three steps: first with <b>real objects</b> (counters, coins, blocks), then with <b>pictures</b>, and only then with <b>numbers and symbols</b>. The app covers the picture and symbol steps. Before a new topic, spend a few minutes with real objects, using the "Try at home" ideas in each topic guide.</p><p>For example, for 2 + 1 = 3: put down 2 counters and 1 counter and count them all, then draw 2 circles and 1 circle, then write 2 + 1 = 3.</p></section>
@@ -2036,7 +2249,9 @@ document.addEventListener('click',e=>{
  case 'opt':answer(S.qs[S.i].options[+b.dataset.i],b);break;
  case 'check':checkNum();break;
  case 'hint':if(!S.done){S.hint=true;sfx('tap');hootSays('info',`💡 ${esc(S.qs[S.i].hint)}`,'think');const sl=document.getElementById('vhslot');if(sl&&!sl.innerHTML&&!document.getElementById('vhbox').innerHTML&&vhFor(S.qs[S.i]))sl.innerHTML='<button class="ghost vhbtn" data-act="vhint">🖼️ Visual hint</button>'}break;
-  case 'vhint':{const h=vhFor(S.qs[S.i]);if(h){S.hint=true;sfx('tap');const sl=document.getElementById('vhslot');if(sl)sl.innerHTML='';const box=document.getElementById('vhbox');if(box)box.innerHTML=`<div class="vhbox" style="${S.topic.style}"><span class="vhttl">🖼️ Here is a picture to help</span>${h}</div>`;hootSays('info','Look at the picture. It helps you work it out.','think')}break}
+  case 'vhint':{const h=vhFor(S.qs[S.i]);if(h){S.hint=true;sfx('tap');const sl=document.getElementById('vhslot');if(sl)sl.innerHTML='';const box=document.getElementById('vhbox');
+   if(box){if(typeof h==='object'&&h.w){box.innerHTML=`<div class="vhbox" style="${S.topic.style}"><span class="vhttl">🖐️ Try it yourself</span><div class="ivh-body"></div></div>`;h.w(box.querySelector('.ivh-body'));hootSays('info','Try it with your finger!','think')}
+   else{box.innerHTML=`<div class="vhbox" style="${S.topic.style}"><span class="vhttl">🖼️ Here is a picture to help</span>${h}</div>`;hootSays('info','Look at the picture. It helps you work it out.','think')}}}break}
  case 'next':S.i++;if(S.i>=S.qs.length)renderEnd();else renderQ();break;
  case 'sound':DB.settings.sound=!DB.settings.sound;save();if(b.classList.contains('icon')){b.textContent=DB.settings.sound?'🔔':'🔕';b.setAttribute('aria-label','Sounds '+(DB.settings.sound?'on':'off'))}else b.textContent=DB.settings.sound?'🔔 On':'🔕 Off';sfx('tap');break;
  case 'phelp':gate(()=>openSheet(helpHTML(),S.topic.style));break;
