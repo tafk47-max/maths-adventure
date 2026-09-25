@@ -350,6 +350,8 @@ table.ctable td{font-size:15px}
 .coin small,.note small{font-size:10px;font-weight:800}
 .note{display:inline-flex;flex-direction:column;align-items:center;justify-content:center;width:92px;height:50px;border-radius:8px;border:3px solid rgba(0,0,0,.3);font-family:"Baloo 2",sans-serif;font-weight:800;font-size:22px;color:#23284A;line-height:1}
 .n5{background:#CDBDF5}.n10{background:#F2CE92}.n50{background:#A9DDBE}.n100{background:#F5AFAF}
+.u1{width:48px;height:48px;background:#D99058;font-size:15px}.u5{width:56px;height:56px;background:#D8DCE4;font-size:16px}.u10{width:44px;height:44px;background:#D8DCE4;font-size:14px}.u25{width:62px;height:62px;background:#D8DCE4;font-size:17px}.u50{width:70px;height:70px;background:#C7CEDA;font-size:18px}
+.note.usd{background:#B9DDB0}
 .tagwrap{display:flex;justify-content:center}.ptag{font-family:"Baloo 2",sans-serif;font-weight:800;font-size:30px;background:var(--sun);color:#1F2A5A;border:3px solid var(--ink);border-radius:14px 30px 30px 14px;padding:6px 22px}
 .patrow.sm{font-size:28px;gap:4px;flex-wrap:nowrap}
 .cuberow{display:flex;gap:2px}.cuberow i{width:32px;height:30px;background:#FF9A3D;border:2px solid var(--ink);border-radius:4px;display:block}
@@ -642,11 +644,11 @@ function circleCheckSVG(isCircle){return `<svg viewBox="0 0 200 150" class="shp"
 
 /* money: local currency (Saudi riyals by default) or simple coins */
 const CUR=()=>{try{return (DB&&DB.settings&&DB.settings.currency)||'SAR'}catch(e){return 'SAR'}};
-const DEN=()=>CUR()==='SAR'?[1,2,5,10,50,100]:[1,2,5,10,20,50];
-const mname=v=>CUR()==='SAR'?(v===1?'1 riyal':`${v} riyals`):`${v}c`;
-const munit=()=>CUR()==='SAR'?'riyals':'c';
-function moneyHTML(list){const sar=CUR()==='SAR';return `<div class="coinrow">${list.map(v=>sar?(v<5?`<span class="coin sar">${v}<small>riyal${v>1?'s':''}</small></span>`:`<span class="note n${v}">${v}<small>riyals</small></span>`):`<span class="coin c${v}">${v}c</span>`).join('')}</div>`}
-const tagHTML=v=>`<div class="tagwrap"><span class="ptag">🏷️ ${CUR()==='SAR'?v+' SAR':v+'c'}</span></div>`;
+const DEN=()=>CUR()==='SAR'?[1,2,5,10,50,100]:[1,5,10,25,50,100];
+const mname=v=>CUR()==='SAR'?(v===1?'1 riyal':`${v} riyals`):(v>=100?'$'+v/100:v+'¢');
+const munit=()=>CUR()==='SAR'?'riyals':'cents';
+function moneyHTML(list){const sar=CUR()==='SAR';return `<div class="coinrow">${list.map(v=>sar?(v<5?`<span class="coin sar">${v}<small>riyal${v>1?'s':''}</small></span>`:`<span class="note n${v}">${v}<small>riyals</small></span>`):(v>=100?`<span class="note usd">$${v/100}<small>dollar${v>100?'s':''}</small></span>`:`<span class="coin u${v}">${v}¢</span>`)).join('')}</div>`}
+const tagHTML=v=>`<div class="tagwrap"><span class="ptag">🏷️ ${CUR()==='SAR'?v+' SAR':(v>=100?'$'+v/100:v+'¢')}</span></div>`;
 const msum=l=>l.reduce((a,b)=>a+b,0);
 function pickMoney(n,max){let l,g=0;do{l=[...Array(n)].map(()=>pick(DEN()));g++}while((msum(l)>max)&&g<200);return l.sort((a,b)=>b-a)}
 
@@ -779,16 +781,16 @@ const TOPICS=[
  chal(){if(Math.random()<.5){const n=3*R(1,6);return{obj:'3Nf.05',kind:'Challenge: one third',text:`What is one third of ${n}?`,type:'num',answer:n/3,hint:`Share ${n} into 3 equal groups.`}}return{obj:'3Nf.07',kind:'Challenge: adding quarters',text:'1/4 + 2/4 = ?',type:'mc',options:shuffle(['3/4','3/8','2/4','1']),answer:'3/4',big:true,hint:'Count the quarters: 1 quarter and 2 more quarters.'}}},
 
 {id:'money',strand:0,emoji:'💵',title:'Money',tag:'Coins, notes and prices',objs:['2Nm.01','2Nm.02'],
- intro:()=>CUR()==='SAR'?`<p>In Saudi Arabia we use <b>riyals</b>. There are <b>1 riyal and 2 riyal coins</b>, and <b>5, 10, 50 and 100 riyal notes</b>.</p><p>The number on the coin or note tells you what it is worth.</p><p>Prices can be written like <b>15 SAR</b>, which means 15 riyals.</p><p>To find the total, start with the <b>biggest</b> note or coin and count on.</p>`:`<p>Coins have different <b>values</b>. The number on the coin tells you what it is worth, not its size!</p><p><b>c</b> means cents. To find the total, start with the <b>biggest</b> coin and count on.</p>`,
- examples:()=>[{title:'Counting money',visual:moneyHTML(CUR()==='SAR'?[10,5,2]:[10,5,2]),text:`Start with the biggest: 10. Then 15. Then 17. That is <b>${mname(17)}</b>.`},{title:'Reading a price',visual:tagHTML(25),text:`The price tag says <b>${mname(25)}</b>.`}],
+ intro:()=>CUR()==='SAR'?`<p>In Saudi Arabia we use <b>riyals</b>. There are <b>1 riyal and 2 riyal coins</b>, and <b>5, 10, 50 and 100 riyal notes</b>.</p><p>The number on the coin or note tells you what it is worth.</p><p>Prices can be written like <b>15 SAR</b>, which means 15 riyals.</p><p>To find the total, start with the <b>biggest</b> note or coin and count on.</p>`:`<p>In the USA we use <b>dollars</b> and <b>cents</b>. The coins are <b>1¢, 5¢, 10¢, 25¢ and 50¢</b>. 100 cents make <b>1 dollar ($1)</b>, which is a note.</p><p>The number on a coin tells you what it is worth, not its size! The 10¢ coin is small, but it is worth more than the 5¢ coin.</p><p><b>¢</b> means cents. To find the total, start with the <b>biggest</b> coin and count on.</p>`,
+ examples:()=>[{title:'Counting money',visual:moneyHTML(CUR()==='SAR'?[10,5,2]:[25,10,5]),text:CUR()==='SAR'?`Start with the biggest: 10. Then 15. Then 17. That is <b>${mname(17)}</b>.`:`Start with the biggest: 25. Then 35. Then 40. That is <b>${mname(40)}</b>.`},{title:'Reading a price',visual:tagHTML(25),text:`The price tag says <b>${mname(25)}</b>.`}],
  gen(){const k=pick(['total','total','compare','make','tag','worth','add2']);
   if(k==='total'){const l=pickMoney(R(2,4),100);return{obj:'2Nm.02',kind:'Counting money',text:'How much money is there?',visual:moneyHTML(l),type:'num',unit:munit(),answer:msum(l),hint:'Start with the biggest one. Then count on the rest.'}}
   if(k==='compare'){let A,B,g=0;do{A=pickMoney(R(2,3),100);B=pickMoney(R(2,3),100);g++}while(msum(A)===msum(B)&&g<50);return{obj:'2Nm.02',kind:'Comparing amounts',text:'Which purse has more money?',visual:`<div class="purses"><div class="purse">Purse A${moneyHTML(A)}</div><div class="purse">Purse B${moneyHTML(B)}</div></div>`,type:'mc',options:['Purse A','Purse B'],answer:msum(A)>msum(B)?'Purse A':'Purse B',hint:'Add up each purse. More coins does not mean more money.'}}
-  if(k==='make'){const D=DEN(),a=pick(D.slice(1)),b=pick(D.filter(x=>x<=a)),t=a+b;const lab=(x,y)=>`${mname(x)} + ${mname(y)}`;const opts=[lab(a,b)],sums=new Set([t]);let g=0;while(opts.length<4&&g<80){g++;const x=pick(D),y=pick(D.filter(z=>z<=x));if(!sums.has(x+y)&&x+y<=150){sums.add(x+y);opts.push(lab(x,y))}}return{obj:'2Nm.02',kind:'Which coins or notes make an amount',text:`Which make ${mname(t)}?`,type:'mc',options:shuffle(opts),answer:lab(a,b),hint:'Add up each pair and see which one fits.'}}
-  if(k==='tag'){const v=R(12,95);let r=(v%10)*10+Math.floor(v/10);if(r===v||v%10===0)r=v+1;const ans=mname(v);return{obj:'2Nm.01',kind:'Reading a price',text:'How much does it cost?',visual:tagHTML(v),type:'mc',options:fillOpts(ans,[mname(r),mname(v*10),mname(v+1)]),answer:ans,hint:CUR()==='SAR'?'SAR means riyals. Read the number on the tag.':'c means cents. Read the number on the tag.'}}
-  if(k==='worth'){const sar=CUR()==='SAR';const big=sar?pick([5,10,50]):pick([10,20,50]),small=sar?pick([1,2]):pick([1,2,5]);let n=R(2,6);if(small*n===big)n++;const left=sar?`one ${big} riyal note`:`one ${big}c coin`,right=`${n} coins of ${mname(small)}`;return{obj:'2Nm.02',kind:'Which is worth more',text:'Which is worth more?',visual:`<div class="purses"><div class="purse">${moneyHTML([big])}</div><div class="purse">${moneyHTML(Array(n).fill(small))}</div></div>`,type:'mc',options:[left,right],answer:big>small*n?left:right,hint:`Count up the coins: ${small} each, ${n} of them.`}}
+  if(k==='make'){const D=CUR()==='SAR'?DEN():DEN().filter(x=>x<100),a=pick(D.slice(1)),b=pick(D.filter(x=>x<=a)),t=a+b;const lab=(x,y)=>`${mname(x)} + ${mname(y)}`;const opts=[lab(a,b)],sums=new Set([t]);let g=0;while(opts.length<4&&g<80){g++;const x=pick(D),y=pick(D.filter(z=>z<=x));if(!sums.has(x+y)&&x+y<=(CUR()==='SAR'?150:100)){sums.add(x+y);opts.push(lab(x,y))}}return{obj:'2Nm.02',kind:'Which coins or notes make an amount',text:`Which make ${mname(t)}?`,type:'mc',options:shuffle(opts),answer:lab(a,b),hint:'Add up each pair and see which one fits.'}}
+  if(k==='tag'){const v=R(12,95);let r=(v%10)*10+Math.floor(v/10);if(r===v||v%10===0)r=v+1;const ans=mname(v);return{obj:'2Nm.01',kind:'Reading a price',text:'How much does it cost?',visual:tagHTML(v),type:'mc',options:fillOpts(ans,[mname(r),CUR()==='SAR'?mname(v*10):mname(v+10>99?v-10:v+10),mname(v+1)]),answer:ans,hint:CUR()==='SAR'?'SAR means riyals. Read the number on the tag.':'¢ means cents. Read the number on the tag.'}}
+  if(k==='worth'){const sar=CUR()==='SAR';const big=sar?pick([5,10,50]):pick([25,50,100]),small=sar?pick([1,2]):pick([1,5,10]);let n=R(2,6);if(small*n===big)n++;const left=sar?`one ${big} riyal note`:(big===100?'one $1 note':`one ${big}¢ coin`),right=`${n} coins of ${mname(small)}`;return{obj:'2Nm.02',kind:'Which is worth more',text:'Which is worth more?',visual:`<div class="purses"><div class="purse">${moneyHTML([big])}</div><div class="purse">${moneyHTML(Array(n).fill(small))}</div></div>`,type:'mc',options:[left,right],answer:big>small*n?left:right,hint:`Count up the coins: ${small} each, ${n} of them.`}}
   let a,b;do{a=R(11,59);b=R(1,29)}while(a%10+b%10>9||a+b>99);return{obj:'2Nm.02',kind:'Adding two prices',text:`A toy costs ${mname(a)} and a book costs ${mname(b)}. How much for both?`,type:'num',unit:munit(),answer:a+b,hint:`Put them together: ${a} + ${b}.`}},
- chal(){const have=CUR()==='SAR'?pick([10,50,100]):pick([20,50]),price=R(3,have-1);return{obj:'3Nm.02',kind:'Challenge: working out change',text:`You pay with ${mname(have)} for something that costs ${mname(price)}. How much change do you get?`,type:'num',unit:munit(),answer:have-price,hint:`Count up from ${price} to ${have}. That is the change.`}}},
+ chal(){const have=CUR()==='SAR'?pick([10,50,100]):pick([50,100]),price=R(3,have-1);return{obj:'3Nm.02',kind:'Challenge: working out change',text:`You pay with ${mname(have)} for something that costs ${mname(price)}. How much change do you get?`,type:'num',unit:munit(),answer:have-price,hint:`Count up from ${price} to ${have}. That is the change.`}}},
 
 {id:'shapes',strand:1,emoji:'🔷',title:'2D and 3D Shapes',tag:'Sides, vertices, faces and shapes around us',objs:['2Gg.01','2Gg.02','2Gg.05','2Gg.08'],
  intro:`<p><b>2D shapes</b> are flat. <b>3D shapes</b> are solid.</p><p>2D shapes have <b>sides</b> and <b>vertices</b> (corners). A shape keeps its name even when it is turned around!</p><p>A <b>circle</b> has a <b>centre</b>. Every point on its edge is the same distance from the centre.</p><p>3D shapes have <b>faces</b> (flat surfaces), <b>edges</b> (where faces meet) and <b>vertices</b> (corners). A cube has 6 faces, 12 edges and 8 vertices.</p><p>Look for shapes around you: a door is a rectangle, a clock face is a circle.</p>`,
@@ -1051,7 +1053,7 @@ function vhDeal(n,g,e){e=e||'🍬';let h='<div class="groups">';for(let i=0;i<g;
 function vhArray(r,c){return arrayDots(r,c)+vhCap(`Each row has ${c}. Count in ${c}s: one row, two rows…`)}
 function vhFracWall(){const row=(parts,lab)=>`<div class="fwrow">${[...Array(parts)].map(()=>`<span>${lab}</span>`).join('')}</div>`;
  return `<div class="fwall">${row(1,'1 whole')}${row(2,'half')}${row(3,'third')}${row(4,'quarter')}</div>`+vhCap('The more parts, the smaller each part is.')}
-function vhMoneyCard(){const sar=CUR()==='SAR';return moneyHTML(sar?[1,2,5,10]:[1,2,5,10])+vhCap(sar?'Put the biggest first, then count on the rest.':'Put the biggest coin first, then count on the rest.')}
+function vhMoneyCard(){const sar=CUR()==='SAR';return moneyHTML(sar?[1,2,5,10]:[1,5,10,25])+vhCap(sar?'Put the biggest first, then count on the rest.':'Put the biggest coin first, then count on the rest.')}
 function vhCountUp(from,to){const n=Math.min(to-from,10);return `<div class="vtrack">${[...Array(n+1)].map((_,i)=>`<span class="${i===0?'on':''}">${from+i}</span>`).join('')}</div>`+vhCap(`Start at ${from} and count up. Count how many steps you take.`)}
 function vhClockGuide(){let s='<svg viewBox="0 0 240 240" class="clock" style="max-width:230px"><circle cx="120" cy="120" r="92" fill="var(--card)" stroke="var(--ink)" stroke-width="5"/>';
  for(let i=0;i<12;i++){const a=-Math.PI/2+i*Math.PI/6,x=120+68*Math.cos(a),y=120+68*Math.sin(a),X=120+108*Math.cos(a),Y=120+108*Math.sin(a);
@@ -1807,7 +1809,7 @@ function gateGo(){const v=+(document.getElementById('gatein').value||'').trim();
 
 /* ================= about ================= */
 const _u=s=>{try{return Array.from(atob(s)).map((c,i)=>String.fromCharCode(c.charCodeAt(0)^(7+i%5))).join('')}catch(e){return ''}};
-const APPVER='1.2',APPDATE='21 September 2026',OWNER=_u('U2lvYm5iZQ=='),LINKEDIN=_u('b3x9eng9JyZ9fHAmZWNlbG1tY2Upa2ZnJG5mJn5qYWBsb2ZyZGVrYyg=');
+const APPVER='1.3',APPDATE='26 September 2026',OWNER=_u('U2lvYm5iZQ=='),LINKEDIN=_u('b3x9eng9JyZ9fHAmZWNlbG1tY2Upa2ZnJG5mJn5qYWBsb2ZyZGVrYyg=');
 const LIlink=()=>`<a href="${LINKEDIN}" target="_blank" rel="noopener noreferrer">LinkedIn profile</a>`;
 function aboutHTML(){return `<h2>ℹ️ About this app</h2>
  <h3>About</h3><p>Maths Adventure Stage 2, version ${APPVER}. Produced ${APPDATE}. Created by ${OWNER}. Connect or get in touch: ${LIlink()}</p>
@@ -2145,7 +2147,7 @@ function dataHTML(p){const lb=DB.settings.lastBackup,daysSince=lb?Math.floor((Da
  <div class="setrow"><b>Theme and buddy</b><span class="muted">${THEMES[p.theme].emoji} ${THEMES[p.theme].name}, buddy ${esc(p.buddy.name)}</span><button class="ghost" data-act="plook">Change</button></div>
  <div class="setrow"><b>Clock during practice</b><button class="ghost" data-act="pclock">${p.clock?'⏱️ On':'Off'}</button><span class="muted">Shows a count-up clock on question pages. Off is best for most children. The finishing time always shows on the result screen.</span></div>
  <div class="setrow"><b>Remove learner</b><button class="ghost warnbtn" data-act="pdel">Delete ${esc(p.name)} and their records</button></div></section>`;
- h+=`<section class="psec"><h2>Money</h2><div class="setrow"><button class="ghost" data-act="currency">${CUR()==='SAR'?'💵 Saudi riyals':'🪙 Simple coins (c)'}</button><span class="muted">Stage 2 practises your local money. Tap to switch. This applies to all learners.</span></div></section>`;
+ h+=`<section class="psec"><h2>Money</h2><p class="muted">Choose the money used in the questions. This applies to all learners.</p><div class="rquick">${[['SAR','💵 Saudi riyals (SAR)'],['USD','💲 US dollars (USD)']].map(c=>`<button class="tab${(CUR()==='SAR'?'SAR':'USD')===c[0]?' sel':''}" data-act="currency" data-c="${c[0]}" aria-pressed="${(CUR()==='SAR'?'SAR':'USD')===c[0]}">${c[1]}</button>`).join('')}</div><p class="muted">US dollars use real US coins and notes: 1¢, 5¢, 10¢, 25¢, 50¢ and dollar notes. Stage 2 uses whole amounts only.</p></section>`;
  h+=`<section class="psec"><h2>Sounds</h2><div class="setrow"><button class="ghost" data-act="sound">${DB.settings.sound?'🔔 On':'🔕 Off'}</button><span class="muted">Chimes for right answers and the end of a round.</span></div></section>`;
  h+=`<section class="psec"><h2>Export to Excel</h2><p>Creates an Excel file with four sheets: Summary, Tests, Questions and Learners.</p>
  <div class="setrow"><label><input type="radio" name="xwho" value="one" ${p?'checked':'disabled'}> ${p?esc(p.name)+' only':'This learner'}</label><label><input type="radio" name="xwho" value="all" ${p?'':'checked'}> All learners</label></div>
@@ -2244,7 +2246,7 @@ document.addEventListener('click',e=>{
  case 'learn':closeSheet();renderLearn();break;
  case 'start':startQuiz('normal');break;
  case 'startc':startQuiz('chal');break;
- case 'currency':DB.settings.currency=CUR()==='SAR'?'generic':'SAR';save();renderParents();break;
+ case 'currency':DB.settings.currency=b.dataset.c==='USD'?'USD':'SAR';save();renderParents();break;
  case 'flip':{S.flips=S.flips||{h:0,t:0};const hd=Math.random()<.5;S.flips[hd?'h':'t']++;const l=document.getElementById('fliplast');if(l)l.textContent=hd?'🪙 Heads!':'🪙 Tails!';document.getElementById('fh').textContent=S.flips.h;document.getElementById('ft').textContent=S.flips.t;sfx('tap');break}
  case 'flipreset':{S.flips={h:0,t:0};['fh','ft'].forEach(i=>{const e=document.getElementById(i);if(e)e.textContent='0'});const l=document.getElementById('fliplast');if(l)l.textContent='Tap to flip';break}
  case 'say':say(S.say[b.dataset.say]||'');break;
